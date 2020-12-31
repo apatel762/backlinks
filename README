@@ -1,8 +1,4 @@
-To get this running, do:
-
-  make install
-
-and then try:
+To generate a static web page using the notes in this folder, do:
 
   make gen
 
