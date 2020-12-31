@@ -1,0 +1,3 @@
+Currently the Makefile is naive when generating back links e.g. if `[page B]
+(pageB.html)` is appended to pageC.md, at the moment `make` will look through
+all *.md files. This is inefficient.
