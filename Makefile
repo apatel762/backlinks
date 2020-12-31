@@ -1,24 +1,14 @@
-INFILES     := $(shell find . -name "*.md")
-OUTFILES    := $(INFILES:.md=.html)
-LINKFILES   := $(INFILES:.md=.bl)
+# in case we have files named like the make targets...
+.PHONY: install gen clean
 
-.PHONY: all clean test
-.PRECIOUS: $(LINKFILES)
+install:
+	@bin/install.sh
 
-all: $(OUTFILES)
+# generate the static webpage
+gen: clean
+	@venv/bin/python bin/generate_backlinks_files.py
+	@bin/pandocify.sh
 
-# These need to be all made before the HTML is processed
-%.bl: $(INFILES)
-	@echo Creating backlinks
-	@touch $(LINKFILES)
-	@for m in $^; do go run backlinks.go $$m; done
-
-%.html: %.md %.bl
-	@echo Deps $^
-	@cmark $^ > $@
-
-test:
-	@for i in *.html; do diff $$i test/$$i; done
-
+# clean up all generated files
 clean:
-	rm -f *.bl *.html
+	@rm -f *.backlinks *.html

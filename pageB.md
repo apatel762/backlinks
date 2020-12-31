@@ -1,3 +1,3 @@
 # Page B
 
-[Page A](pageA.html) is also a great resource.
+[Page A](pageA.md) is also a great resource, and let's not forget about [[pageC]]
