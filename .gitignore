@@ -1,6 +1,7 @@
 # General
 *.html
 *.bl
+*.backlinks
 
 # IDE
 .idea
