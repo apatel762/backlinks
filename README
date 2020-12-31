@@ -1,7 +1,26 @@
-Requirements:
-* Python 3.8
+To get this running, do:
 
-Do not run any of the scripts manually, use the Makefile
+  make install
 
-To run:
-make all - will clean
+and then try:
+
+  make gen
+
+to generate a static site using the example markdown files that are
+included in the repo.
+
+------------------------------------------------------------------------
+
+TODO: Markdown notes shouldn't have to be in the repo folder, the html
+generator should work no matter where the notes are stored.
+
+TODO: Generated backlinks files should go to a temp folder as they are
+deleted every run.
+
+TODO: Dark theme.
+
+TODO: Generate an index.html file (after everything else) which contains
+a literal index of every single note. It may be useful to separate some
+of the python code into a util.py file so it can be re-used in the
+script which generates the index.html file. This file should be
+generated after everything else so that it doesnt pollute the backlinks.
