@@ -1,3 +1,7 @@
-Currently the Makefile is naive when generating back links e.g. if `[page B]
-(pageB.html)` is appended to pageC.md, at the moment `make` will look through
-all *.md files. This is inefficient.
+Requirements:
+* Python 3.8
+
+Do not run any of the scripts manually, use the Makefile
+
+To run:
+make all - will clean
