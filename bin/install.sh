@@ -32,7 +32,7 @@ require python3 "for creating the virtual env that the scripts will work in"
 # ---------------------------------------------------------------------------
 # VARIABLES
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cleanup() {
     # no cleanup to do
