@@ -3,6 +3,7 @@
 
 import os
 import re
+import argparse
 from typing import List
 
 # ---------------------------------------------------------------------------
@@ -25,12 +26,12 @@ def last_n_chars(s: str, n: int) -> str:
     return s[-n::]
 
 
-def is_markdown_file(file_name: str) -> bool:
+def is_md(file_name: str) -> bool:
     return last_n_chars(file_name, n=3) == '.md'
 
 
-def markdown_filenames_in_current_directory() -> List[str]:
-    return [fn for fn in os.listdir() if is_markdown_file(file_name=fn)]
+def markdown_filenames(folder_path: str) -> List[str]:
+    return [fn for fn in os.listdir(folder_path) if is_md(file_name=fn)]
 
 
 def markdown_link(display: str, link: str) -> str:
@@ -38,7 +39,18 @@ def markdown_link(display: str, link: str) -> str:
 
 
 if __name__ == '__main__':
-    file_names = markdown_filenames_in_current_directory()
+    parser = argparse.ArgumentParser(
+        description='Generate backlinks for files in a given folder')
+    parser.add_argument(
+        'folder', type=str,
+        help='The absolute path of the folder that holds all of your notes. '
+             'All of the notes that you want to generate the backlinks for '
+             'should be in the top-level of this folder; the script will not '
+             'recursively serach for any markdown files that are in '
+             'subfolders.')
+    args = parser.parse_args()
+
+    file_names = markdown_filenames(folder_path=args.folder)
     print(f'Found {len(file_names)} files in the current folder')
 
     # NOTE: current backlink searching is slow... O(n^2)
@@ -84,4 +96,5 @@ if __name__ == '__main__':
             f.write('\n')
             f.write('\n')
             for backlink in set(references):
-                f.write(f'- {markdown_link(display=backlink[:-3], link=backlink)} \n')
+                f.write(
+                    f'- {markdown_link(display=backlink[:-3], link=backlink)} \n')
