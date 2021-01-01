@@ -116,11 +116,13 @@ if __name__ == '__main__':
         # original file is converted to HTML
         backlinks_file_path = f'{backlinks_folder}/{file_name}.backlinks'
         with open(backlinks_file_path, 'w') as f:
-            f.write('\n')
-            f.write('---')
-            f.write('\n')
-            f.write('Backlinks:')
-            f.write('\n')
-            f.write('\n')
-            for backlink, display in set(references):
-                f.write(f'- {markdown_link(display, link=backlink)} \n')
+            if len(references) > 0:
+                f.write('\n')
+                f.write('---')
+                f.write('\n')
+                f.write('Backlinks:')
+                f.write('\n')
+                f.write('\n')
+                for backlink, display in set(references):
+                    f.write(f'- {markdown_link(display, link=backlink)} \n')
+
