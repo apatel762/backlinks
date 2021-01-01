@@ -2,10 +2,10 @@
 # VARIABLES
 
 # abs path of where the notes are
-MARKDOWN_FILES_LOCATION = /home/arjun/.nb/notes
+MARKDOWN_FILES_LOCATION=/home/arjun/.nb/notes
 
 # relative path of the temp folder where the .backlinks files will go
-BACKLINKS_TEMP_FOLDER = temp
+BACKLINKS_TEMP_FOLDER=temp
 
 # ----------------------------------------------------------------------
 
@@ -13,7 +13,9 @@ BACKLINKS_TEMP_FOLDER = temp
 
 # generate the static webpage
 gen: install clean
-	@venv/bin/python bin/generate_backlinks_files.py
+	@venv/bin/python bin/generate_backlinks_files.py \
+		"$(MARKDOWN_FILES_LOCATION)" \
+		"$(BACKLINKS_TEMP_FOLDER)"
 	@bin/pandocify.sh
 
 install:
@@ -21,4 +23,4 @@ install:
 
 # clean up all generated files
 clean:
-	@rm -f *.backlinks *.html
+	@rm -fv "$(BACKLINKS_TEMP_FOLDER)"
