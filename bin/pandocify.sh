@@ -78,6 +78,8 @@ first_line() {
 
 mkdir -p html
 
+# use pandoc to find any markdown files in the notes folder and convert them
+# to HTML
 for FILE in "$NOTES_FOLDER_ABS"/*.md; do
     log "converting $FILE to $HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html"
     pandoc \
@@ -90,6 +92,17 @@ for FILE in "$NOTES_FOLDER_ABS"/*.md; do
         --metadata pagetitle="$(first_line "$FILE")" \
         --self-contained
 done
+
+# copy sub-folders from the notes folder to our desetination HTML folder
+# I need this because I have a subfolder in my notes folder where I have a
+# bunch of saved webpages that I would like to link to from my notes (and
+# would like the links to still work when I convert the notes to HTML)
+find "$NOTES_FOLDER_ABS" \
+    -mindepth 1 \
+    -maxdepth 1 \
+    -type d \
+    ! -name ".git" \
+    -exec cp -rvu {} -t "$HTML_FOLDER_REL" \;
 
 # ---------------------------------------------------------------------------
 # CLEAN EXIT
