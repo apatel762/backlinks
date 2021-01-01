@@ -1,8 +1,24 @@
+BACKLINKS
+
 To generate a static web page using the notes in this folder, do:
 
   make gen
 
-to generate a static site using the example markdown files that are
+to generate a static site using the example markdown files that are 
 included in the repo.
 
-Inspired by https://github.com/kaihendry/backlinks
+CONTEXT
+
+I wanted a way of managing backlinks in my markdown notes when I
+converted them to HTML. I came across someone who wanted to do the exact
+same thing so I thought I'd take their code as a starting point and
+re-write it so that it works the way I want.
+
+The code I started from:
+
+  https://web.archive.org/web/20210101134400/https://stackoverflow.com/questions/53798599/how-can-i-build-html-with-a-makefile-with-backlinks
+  https://web.archive.org/web/20210101134414/https://github.com/kaihendry/backlinks
+
+The CSS:
+
+  https://web.archive.org/web/20210101134417/https://www.nordtheme.com/docs/colors-and-palettes/
