@@ -43,6 +43,14 @@ def create_folder(location: str) -> None:
     pathlib.Path(location).mkdir(parents=True, exist_ok=True)
 
 
+def first_line(file_path: str) -> str:
+    title = ''
+    with open(file_path, 'r') as f:
+        first_line = f.readline()
+        title = first_line[2:]
+    return title
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Generate backlinks for files in a given folder')
@@ -89,7 +97,8 @@ if __name__ == '__main__':
                 for display, link in md_links.findall(contents):
                     if link == file_name:
                         print(f'{file_name}: referenced by {other_file}')
-                        references.append(other_file)
+                        title = first_line(f'{notes_folder}/{other_file}')
+                        references.append((other_file, title))
 
                 # for roam style links the results of re.findall() will just
                 # be a list of stuff like:
@@ -99,7 +108,8 @@ if __name__ == '__main__':
                 for display in roam_links.findall(contents):
                     if display == file_name[:-len('.md')]:
                         print(f'{file_name}: [[referenced]] by {other_file}')
-                        references.append(other_file)
+                        title = first_line(f'{notes_folder}/{other_file}')
+                        references.append((other_file, title))
 
         # write out all of the backlinks using some properly styled markdown
         # this bit will be appended to the original file later on when the
@@ -112,6 +122,5 @@ if __name__ == '__main__':
             f.write('Backlinks:')
             f.write('\n')
             f.write('\n')
-            for backlink in set(references):
-                f.write(
-                    f'- {markdown_link(display=backlink[:-3], link=backlink)} \n')
+            for backlink, display in set(references):
+                f.write(f'- {markdown_link(display, link=backlink)} \n')
