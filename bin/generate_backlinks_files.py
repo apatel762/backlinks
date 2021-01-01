@@ -4,6 +4,7 @@
 import os
 import re
 import argparse
+import pathlib
 from typing import List
 
 # ---------------------------------------------------------------------------
@@ -38,20 +39,35 @@ def markdown_link(display: str, link: str) -> str:
     return f'[{display}]({link})'
 
 
+def create_folder(location: str) -> None:
+    pathlib.Path(location).mkdir(parents=True, exist_ok=True)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Generate backlinks for files in a given folder')
     parser.add_argument(
-        'folder', type=str,
+        'notes_folder', type=str,
         help='The absolute path of the folder that holds all of your notes. '
              'All of the notes that you want to generate the backlinks for '
              'should be in the top-level of this folder; the script will not '
              'recursively serach for any markdown files that are in '
              'subfolders.')
+    parser.add_argument(
+        'temp_folder', type=str,
+        help='The relative path of a folder where you want the backlinks '
+             'files to be stored when they are generated.'
+    )
     args = parser.parse_args()
 
-    file_names = markdown_filenames(folder_path=args.folder)
-    print(f'Found {len(file_names)} files in the current folder')
+    notes_folder = args.notes_folder
+    backlinks_folder = args.temp_folder
+
+    file_names = markdown_filenames(folder_path=notes_folder)
+    print(f'Found {len(file_names)} files in {notes_folder}')
+
+    create_folder(location=backlinks_folder)
+    print(f'Will put backlinks into: {backlinks_folder}/')
 
     # NOTE: current backlink searching is slow... O(n^2)
     for file_name in file_names:
@@ -64,7 +80,7 @@ if __name__ == '__main__':
             if other_file == file_name:
                 continue
 
-            with open(other_file, 'r') as f:
+            with open(f'{notes_folder}/{other_file}', 'r') as f:
                 contents = f.read()
 
                 # the results of re.findall() will look something like
@@ -88,7 +104,8 @@ if __name__ == '__main__':
         # write out all of the backlinks using some properly styled markdown
         # this bit will be appended to the original file later on when the
         # original file is converted to HTML
-        with open(file_name + '.backlinks', 'w') as f:
+        backlinks_file_path = f'{backlinks_folder}/{file_name}.backlinks'
+        with open(backlinks_file_path, 'w') as f:
             f.write('\n')
             f.write('---')
             f.write('\n')
