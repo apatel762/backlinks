@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# A script that'll zip up a folder and then put it in a designated temporary
-# folder for you to then manually move somewhere else
-
 # ---------------------------------------------------------------------------
 # HELPER FUNCTIONS
 
@@ -23,6 +20,17 @@ log() {
     echo "[$(date)] - $1"
 }
 
+show_help_text() {
+  cat << EOF
+Must supply exactly three parameters to this script:
+
+  \$1 = the absolute path of where the markdown notes are
+  \$2 = the relative path of the folder where the backlinks files are
+  \$3 = the relative path of the folder where HTML files will go
+
+EOF
+}
+
 # ---------------------------------------------------------------------------
 # STUFF THAT NEEDS TO BE INSTALLED TO RUN THIS SCRIPT
 
@@ -35,7 +43,16 @@ require cut "renaming the markdown files to HTML files"
 # ---------------------------------------------------------------------------
 # VARIABLES
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if (( $# != 3 )); then
+    show_help_text
+    oops "incorrect number of parameters were passed in, please check inputs"
+fi
+
+NOTES_FOLDER_ABS="$1"
+BACKLINKS_FOLDER_REL="$2"
+HTML_FOLDER_REL="$3"
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cleanup() {
     # no cleanup to do
@@ -59,13 +76,15 @@ first_line() {
     head -n 1 "$1" | sed "s/^#\ //g"
 }
 
-for FILE in *.md; do
-    log "converting $FILE to $(strip_file_ext "$FILE").html"
+mkdir -p html
+
+for FILE in "$NOTES_FOLDER_ABS"/*.md; do
+    log "converting $FILE to $HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html"
     pandoc \
-        "$FILE" "$FILE.backlinks" \
+        "$FILE" "$BACKLINKS_FOLDER_REL/$(basename "$FILE").backlinks" \
         -f markdown \
         -t html5 \
-        -o "$(strip_file_ext "$FILE").html" \
+        -o "html/$(strip_file_ext "$(basename "$FILE")").html" \
         --lua-filter="$DIR/links_to_html.lua" \
         --css="$DIR/style.css" \
         --metadata pagetitle="$(first_line "$FILE")" \
