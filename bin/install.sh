@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# A script that'll zip up a folder and then put it in a designated temporary
-# folder for you to then manually move somewhere else
-
 # ---------------------------------------------------------------------------
 # HELPER FUNCTIONS
 
