@@ -86,7 +86,7 @@ for FILE in "$NOTES_FOLDER_ABS"/*.md; do
         "$FILE" "$BACKLINKS_FOLDER_REL/$(basename "$FILE").backlinks" \
         -f markdown \
         -t html5 \
-        -o "html/$(strip_file_ext "$(basename "$FILE")").html" \
+        -o "$HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html" \
         --lua-filter="$DIR/links_to_html.lua" \
         --css="$DIR/style.css" \
         --metadata pagetitle="$(first_line "$FILE")" \
