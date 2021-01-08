@@ -118,9 +118,7 @@ if __name__ == '__main__':
         with open(backlinks_file_path, 'w') as f:
             if len(references) > 0:
                 f.write('\n')
-                f.write('---')
-                f.write('\n')
-                f.write('Backlinks:')
+                f.write('Links:')
                 f.write('\n')
                 f.write('\n')
                 for backlink, display in set(references):
