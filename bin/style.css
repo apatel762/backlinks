@@ -19,7 +19,7 @@
   --nord10: #5e81ac; /* tertiary UI elements */
 }
 
-/* BEGIN special styling for backlinks text */
+/* BEGIN special styling for backlinks and footnotes text */
 div.footer {
   margin-top: 2.5rem;
   margin-bottom: 0.5rem;
@@ -35,7 +35,15 @@ div.footer {
 div.footer h3 {
   margin-top: 0;
 }
-/* END special styling for backlinks text*/
+
+section.footnotes ol li p {
+  margin: 0;
+}
+
+section.footnotes hr {
+  height: 2px;
+}
+/* END special styling for backlinks and footnotes text*/
 
 html {
   /* deepest layer background colour */
