@@ -36,6 +36,11 @@ div.footer h3 {
   margin-top: 0;
 }
 
+div.footer ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
 section.footnotes ol li p {
   margin: 0;
 }

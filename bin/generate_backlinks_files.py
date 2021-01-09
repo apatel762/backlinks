@@ -36,7 +36,9 @@ def markdown_filenames(folder_path: str) -> List[str]:
 
 
 def html_link(link: str, display: str) -> str:
-    return f'<a href="{link}">{display}</a>'
+    # for some reason pandoc doesn't change the .md to .html in backlinks
+    # so the replacement here is a little hack to make it work
+    return f'<a href="{link.replace(".md", ".html")}">{display}</a>'
 
 
 def create_folder(location: str) -> None:
@@ -55,14 +57,18 @@ def backlinks_html(refs: List[Tuple[str, str]]) -> str:
     if len(refs) <= 0:
         return ''
 
-    txt: str = ''
-    txt += '<div class="footer">' + '\n'
-    txt += '<h3>Links to this page</h3>' + '\n'
+    txt: List[str] = []
+    txt.append('<div class="footer">')
+    txt.append('<h3>Links</h3>')
+    txt.append('<ul>')
     for backlink, display in set(refs):
-        txt += html_link(link=backlink, display=display) + '\n'
-    txt += '<div>'
-
-    return txt
+        txt.append('<li>' + html_link(backlink, display) + '</li>')
+    txt.append('</ul>')
+    # we don't close the div.footer that we opened here; pandoc will do that
+    # for us when it generates the final HTML. Why do this? so when pandoc
+    # generates the footnotes, they will be included in the nicely formatted
+    # footer section that we've created for the backlinks
+    return '\n'.join(txt)
 
 
 if __name__ == '__main__':
