@@ -32,5 +32,5 @@ install:
 	@bin/install.sh
 
 clean:
-	@rm -rfv "$(TEMP_FOLDER)"
-	@rm -rfv "$(HTML_FOLDER)"
+	rm -rfv "$(TEMP_FOLDER)"
+	rm -rfv "$(HTML_FOLDER)"
