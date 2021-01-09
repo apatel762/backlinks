@@ -22,6 +22,8 @@ gen: install clean
 		"$(MARKDOWN_FILES_LOCATION)" \
 		"$(BACKLINKS_TEMP_FOLDER)" \
 		"$(HTML_FOLDER)"
+	@venv/bin/python bin/generate_index_file.py \
+		"$(HTML_FOLDER)"
 
 install:
 	@bin/install.sh
