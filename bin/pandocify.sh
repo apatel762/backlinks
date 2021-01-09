@@ -89,6 +89,7 @@ for FILE in "$NOTES_FOLDER_ABS"/*.md; do
         -o "$HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html" \
         --lua-filter="$DIR/links_to_html.lua" \
         --css="$DIR/style.css" \
+        --include-in-header="$DIR/favicon-meta.txt" \
         --metadata pagetitle="$(first_line "$FILE")" \
         --self-contained
 done
