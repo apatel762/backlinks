@@ -1,15 +1,15 @@
 import argparse
 import os
 import pathlib
-from html.parser import HTMLParser
+from typing import List, Tuple
 
 
 def last_n_chars(s: str, n: int) -> str:
     return s[-n::]
 
 
-def is_html(file_name: str) -> bool:
-    return last_n_chars(file_name, n=5) == '.html'
+def is_md(file_name: str) -> bool:
+    return last_n_chars(file_name, n=3) == '.md'
 
 
 def first_line(file_path: str) -> str:
@@ -20,17 +20,24 @@ def first_line(file_path: str) -> str:
     return title
 
 
-def markdown_link(link: str, display: str) -> str:
-    return f'[{display}]({link})'
+def link_data(folder_path: str) -> List[Tuple[str, str]]:
+    tmp = []
+    for file_name in os.listdir(folder_path):
+        if not is_md(file_name):
+            continue
 
+        title = first_line(folder_path + '/' + file_name)
+        tmp.append((file_name, title))
+
+    return tmp
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Generate an index file in HTML for other HTML files')
     parser.add_argument(
-        'html_folder', type=str,
-        help='The relative path of the folder where you are keeping your '
-             'HTML files (the ones that you want the index file for).'
+        'temp_folder', type=str,
+        help='The relative path of the temp folder (where temporary files '
+             'are left during the build)'
     )
     parser.add_argument(
         'notes_folder', type=str,
@@ -38,18 +45,19 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    html_folder = args.html_folder
+    temp_folder = args.temp_folder
     notes_folder = args.notes_folder
-    html_files = [fn for fn in os.listdir(html_folder) if is_html(file_name=fn)]
 
-    print('creating index file...')
-    print(f'found {len(html_files)} html files to index')
+    print(f'creating index.md in {temp_folder}')
 
-    with open(f'{html_folder}/index.html', 'w') as f:
-        f.write(' Index')
-        f.write(f'There are {len(html_files)} permanotes in your collection:')
-        f.write('')
-        for file_name in html_files:
-            link_display = first_line(file_path=f'{html_folder}/{file_name}')
-            link: str = markdown_link(link=file_name, display=link_display)
-            f.write(f'- {link}')
+    data = link_data(folder_path=notes_folder)
+
+    with open(f'{temp_folder}/index.md', 'w') as f:
+        f.write('# Index')
+        f.write('\n')
+        f.write(f'You have {len(data)} permanotes in your collection')
+        f.write('\n')
+        f.write('\n')
+        for file_name, title in data:
+            link = file_name.replace('.md', '.html')
+            f.write(f'- [{title}]({link})\n')
