@@ -5,7 +5,7 @@ import os
 import re
 import argparse
 import pathlib
-from typing import List
+from typing import List, Tuple
 
 # ---------------------------------------------------------------------------
 # REGEXES
@@ -35,8 +35,8 @@ def markdown_filenames(folder_path: str) -> List[str]:
     return [fn for fn in os.listdir(folder_path) if is_md(file_name=fn)]
 
 
-def markdown_link(display: str, link: str) -> str:
-    return f'[{display}]({link})'
+def html_link(link: str, display: str) -> str:
+    return f'<a href="{link}">{display}</a>'
 
 
 def create_folder(location: str) -> None:
@@ -49,6 +49,20 @@ def first_line(file_path: str) -> str:
         first_line = f.readline()
         title = first_line[2:]
     return title
+
+
+def backlinks_html(refs: List[Tuple[str, str]]) -> str:
+    if len(refs) <= 0:
+        return ''
+
+    txt: str = ''
+    txt += '<div class="footer">' + '\n'
+    txt += '<h3>Links to this page</h3>' + '\n'
+    for backlink, display in set(refs):
+        txt += html_link(link=backlink, display=display) + '\n'
+    txt += '<div>'
+
+    return txt
 
 
 if __name__ == '__main__':
@@ -111,16 +125,9 @@ if __name__ == '__main__':
                         title = first_line(f'{notes_folder}/{other_file}')
                         references.append((other_file, title))
 
-        # write out all of the backlinks using some properly styled markdown
-        # this bit will be appended to the original file later on when the
-        # original file is converted to HTML
+        # write out all of the backlinks using some properly styled markdown.
+        # this bit will be appended to the original note later on when it is
+        # converted to a standalone HTML page
         backlinks_file_path = f'{backlinks_folder}/{file_name}.backlinks'
         with open(backlinks_file_path, 'w') as f:
-            if len(references) > 0:
-                f.write('\n')
-                f.write('Links:')
-                f.write('\n')
-                f.write('\n')
-                for backlink, display in set(references):
-                    f.write(f'- {markdown_link(display, link=backlink)} \n')
-
+            f.write(backlinks_html(refs=references))
