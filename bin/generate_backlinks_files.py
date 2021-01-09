@@ -1,27 +1,13 @@
-# ---------------------------------------------------------------------------
-# IMPORTS
-
 import os
 import re
 import argparse
 import pathlib
 from typing import List, Tuple
 
-# ---------------------------------------------------------------------------
-# REGEXES
-
 # regular expression for finding markdown style links
 # i.e. something like `[My Link](https://broadsilver.com)`
 md_links = re.compile("\[(.*?)\]\((.*?)\)", re.DOTALL)
 
-# regular expression for finding roam style links where the content of the
-# link is just the name of the file that you're linking to
-# i.e. something like `[[My Link]]`
-roam_links = re.compile("\[\[(.*?)\]\]", re.DOTALL)
-
-
-# ---------------------------------------------------------------------------
-# BEGIN SCRIPT
 
 def last_n_chars(s: str, n: int) -> str:
     return s[-n::]
@@ -117,17 +103,6 @@ if __name__ == '__main__':
                 for display, link in md_links.findall(contents):
                     if link == file_name:
                         print(f'{file_name}: referenced by {other_file}')
-                        title = first_line(f'{notes_folder}/{other_file}')
-                        references.append((other_file, title))
-
-                # for roam style links the results of re.findall() will just
-                # be a list of stuff like:
-                # ['pageA']
-                # where in markdown the link would've been something like:
-                #   blah blah [[pageA]]
-                for display in roam_links.findall(contents):
-                    if display == file_name[:-len('.md')]:
-                        print(f'{file_name}: [[referenced]] by {other_file}')
                         title = first_line(f'{notes_folder}/{other_file}')
                         references.append((other_file, title))
 
