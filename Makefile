@@ -5,6 +5,8 @@
 MARKDOWN_FILES_LOCATION=/home/arjun/.nb/notes
 
 # relative path of the temp folder where the .backlinks files will go
+# can also as a generic temp folder since it gets cleaned after every
+# build (e.g. for index.html file generation)
 BACKLINKS_TEMP_FOLDER=temp
 
 # relative path of the folder where the html files will go
@@ -23,7 +25,8 @@ gen: install clean
 		"$(BACKLINKS_TEMP_FOLDER)" \
 		"$(HTML_FOLDER)"
 	@venv/bin/python bin/generate_index_file.py \
-		"$(HTML_FOLDER)"
+		"$(HTML_FOLDER)" \
+		"$(BACKLINKS_TEMP_FOLDER)"
 
 install:
 	@bin/install.sh
