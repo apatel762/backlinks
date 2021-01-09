@@ -76,7 +76,7 @@ first_line() {
     head -n 1 "$1" | sed "s/^#\ //g"
 }
 
-mkdir -p html
+mkdir -p "$HTML_FOLDER_REL"
 
 # use pandoc to find any markdown files in the notes folder and convert them
 # to HTML
