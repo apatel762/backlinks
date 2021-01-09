@@ -17,7 +17,7 @@ require() {
 }
 
 log() {
-    echo "[$(date)] - $1"
+    echo "pandocify: $1"
 }
 
 show_help_text() {
@@ -49,7 +49,7 @@ if (( $# != 3 )); then
 fi
 
 NOTES_FOLDER_ABS="$1"
-BACKLINKS_FOLDER_REL="$2"
+TEMP_FOLDER_REL="$2"
 HTML_FOLDER_REL="$3"
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -76,14 +76,11 @@ first_line() {
     head -n 1 "$1" | sed "s/^#\ //g"
 }
 
-mkdir -p html
-
-# use pandoc to find any markdown files in the notes folder and convert them
-# to HTML
-for FILE in "$NOTES_FOLDER_ABS"/*.md; do
-    log "converting $FILE to $HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html"
+# desc: convert a markdown file to HTML using all of our lovely customisations
+# args: $@ = the markdown files that you want to convert
+do_pandoc_conversion() {
     pandoc \
-        "$FILE" "$BACKLINKS_FOLDER_REL/$(basename "$FILE").backlinks" \
+        "$@" \
         -f markdown \
         -t html5 \
         -o "$HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html" \
@@ -92,7 +89,22 @@ for FILE in "$NOTES_FOLDER_ABS"/*.md; do
         --include-in-header="$DIR/favicon-meta.txt" \
         --metadata pagetitle="$(first_line "$FILE")" \
         --self-contained
+}
+
+mkdir -p "$HTML_FOLDER_REL"  
+
+# use pandoc to find any markdown files in the notes folder and convert them
+# to HTML
+for FILE in "$NOTES_FOLDER_ABS"/*.md; do
+    log "converting $FILE to $HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html"
+    do_pandoc_conversion "$FILE" "$TEMP_FOLDER_REL/$(basename "$FILE").backlinks"
 done
+
+if [ -f "$TEMP_FOLDER_REL/index.md" ]; then
+  FILE="$TEMP_FOLDER_REL/index.md"
+  log "converting $FILE to $HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html"
+  do_pandoc_conversion "$FILE"
+fi
 
 # copy sub-folders from the notes folder to our desetination HTML folder
 # I need this because I have a subfolder in my notes folder where I have a
