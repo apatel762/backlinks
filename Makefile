@@ -14,7 +14,7 @@ HTML_FOLDER=html
 
 # ----------------------------------------------------------------------
 
-.PHONY: install gen clean
+.PHONY: install gen clean server
 
 gen: install clean
 	@venv/bin/python bin/generate_backlinks_files.py \
@@ -34,3 +34,6 @@ install:
 clean:
 	rm -rfv "$(TEMP_FOLDER)"
 	rm -rfv "$(HTML_FOLDER)"
+
+server:
+	python3 -m http.server --directory html/
