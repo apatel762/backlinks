@@ -36,4 +36,4 @@ clean:
 	rm -rfv "$(HTML_FOLDER)"
 
 server:
-	python3 -m http.server --directory html/
+	python3 -m http.server --directory "$(HTML_FOLDER)"
