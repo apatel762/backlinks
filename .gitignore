@@ -2,6 +2,7 @@
 *.html
 *.bl
 *.backlinks
+temp/
 
 # IDE
 .idea
