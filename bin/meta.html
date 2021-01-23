@@ -9,3 +9,17 @@ the CSS folder that we're pointing to will be there when the static
 site generation is done.
 -->
 <link rel="stylesheet" type="text/css" href="css/style.css" media="screen"/>
+
+<!--
+frameworks for creating tooltips and drawing network views
+-->
+<script src='https://unpkg.com/vis-network@8.2.0/dist/vis-network.min.js'></script>
+<script src='https://unpkg.com/@popperjs/core@2.6.0/dist/umd/popper.min.js'></script>
+<script src='https://unpkg.com/tippy.js@6.2.7/dist/tippy-bundle.umd.min.js'></script>
+<link href='https://unpkg.com/tippy.js@6.2.3/themes/light.css' rel='stylesheet'>
+
+<!--
+these .js files control the page stacking via modifying the URI
+-->
+<script src='/js/URI.js'></script>
+<script src='/js/page.js'></script>

@@ -17,6 +17,8 @@ HTML_FOLDER=html
 .PHONY: install gen clean server
 
 gen: install clean
+	# generate static site using scripts
+	#
 	@venv/bin/python bin/generate_backlinks_files.py \
 		"$(MARKDOWN_FILES_LOCATION)" \
 		"$(TEMP_FOLDER)"
@@ -27,8 +29,15 @@ gen: install clean
 		"$(MARKDOWN_FILES_LOCATION)" \
 		"$(TEMP_FOLDER)" \
 		"$(HTML_FOLDER)"
+	# copy CSS files
+	#
 	@mkdir -p "$(HTML_FOLDER)/css"
 	@cp -vu bin/style.css "$(HTML_FOLDER)/css"
+	# copy javascript files
+	#
+	@mkdir -p "$(HTML_FOLDER)/js"
+	@cp -vu bin/page.js "$(HTML_FOLDER)/js"
+	@cp -vu bin/URI.js "$(HTML_FOLDER)/js"
 
 install:
 	@bin/install.sh
