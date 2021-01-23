@@ -14,33 +14,43 @@ HTML_FOLDER=html
 
 # ----------------------------------------------------------------------
 
-.PHONY: install gen clean server
-
-gen: install clean
-	# generate static site using scripts
-	@venv/bin/python bin/py/generate_backlinks_files.py \
-		"$(MARKDOWN_FILES_LOCATION)" \
-		"$(TEMP_FOLDER)"
-	@venv/bin/python bin/py/generate_index_file.py \
-		"$(TEMP_FOLDER)" \
-		"$(MARKDOWN_FILES_LOCATION)"
-	@bin/pandocify.sh \
-		"$(MARKDOWN_FILES_LOCATION)" \
-		"$(TEMP_FOLDER)" \
-		"$(HTML_FOLDER)"
-	# copy CSS files
-	@mkdir -p "$(HTML_FOLDER)/css"
-	@cp -vu bin/css/*.css "$(HTML_FOLDER)/css"
-	# copy javascript files
-	@mkdir -p "$(HTML_FOLDER)/js"
-	@cp -vu bin/js/*.js "$(HTML_FOLDER)/js"
-
-install:
-	@bin/install.sh
+all: \
+	clean \
+	install \
+	generate-backlinks \
+	generate-index \
+	pandoc-conversion \
+	copy-css-and-js \
+	server
 
 clean:
 	rm -rfv "$(TEMP_FOLDER)"
 	rm -rfv "$(HTML_FOLDER)"
+
+install:
+	@bin/install.sh
+
+generate-backlinks:
+	@venv/bin/python bin/py/generate_backlinks_files.py \
+		"$(MARKDOWN_FILES_LOCATION)" \
+		"$(TEMP_FOLDER)"
+
+generate-index:
+	@venv/bin/python bin/py/generate_index_file.py \
+		"$(TEMP_FOLDER)" \
+		"$(MARKDOWN_FILES_LOCATION)"
+
+pandoc-conversion:
+	@bin/pandocify.sh \
+		"$(MARKDOWN_FILES_LOCATION)" \
+		"$(TEMP_FOLDER)" \
+		"$(HTML_FOLDER)"
+
+copy-css-and-js:
+	@mkdir -p "$(HTML_FOLDER)/css"
+	@cp -vu bin/css/*.css "$(HTML_FOLDER)/css"
+	@mkdir -p "$(HTML_FOLDER)/js"
+	@cp -vu bin/js/*.js "$(HTML_FOLDER)/js"
 
 server:
 	python3 -m http.server --directory "$(HTML_FOLDER)"
