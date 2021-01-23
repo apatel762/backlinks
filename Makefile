@@ -49,6 +49,7 @@ pandoc-conversion:
 copy-css-and-js:
 	@mkdir -p "$(HTML_FOLDER)/css"
 	@cp -vu bin/css/*.css "$(HTML_FOLDER)/css"
+	@cp -vu bin/css/*.woff2 "$(HTML_FOLDER)/css"
 	@mkdir -p "$(HTML_FOLDER)/js"
 	@cp -vu bin/js/*.js "$(HTML_FOLDER)/js"
 
