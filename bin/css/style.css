@@ -5,6 +5,16 @@
   --layer3: 84, 84, 86;
   --layer4: 124, 124, 128;
   --layer5: 174, 174, 178; /* highest layer */
+
+  --blue: rgb(10, 132, 255);
+  --green: rgb(48, 209, 88);
+  --indigo: rgb(94, 92, 230);
+  --orange: rgb(255, 159, 10);
+  --pink: rgb(255, 55, 95);
+  --purple: rgb(191, 90, 242);
+  --red: rgb(255, 69, 58);
+  --teal: rgb(100, 210, 255);
+  --yellow: rgb(255, 214, 10);
 }
 
 /* BEGIN blurry background */
@@ -156,15 +166,15 @@ body h6 {
 }
 
 body a {
-  color: var(--nord7);
+  color: var(--teal);
   text-decoration: none;
 }
 
 body a:hover,
 body a:active {
-  background-color: var(--nord3);
-  border: var(--nord3) 2.5px solid;
+  background-color: rgba(var(--layer1), 0.6);
   text-decoration: underline;
+  text-decoration-color: var(--teal);
 }
 
 body hr {
@@ -173,7 +183,7 @@ body hr {
   overflow: hidden;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--nord4);
+  border-bottom: 1px solid whitesmoke;
 }
 
 body hr:before {
@@ -189,11 +199,6 @@ body hr:after {
 
 body img {
   border: 0;
-}
-
-body hr {
-  box-sizing: content-box;
-  height: 0;
 }
 
 body pre {
@@ -362,14 +367,6 @@ body pre {
   margin-bottom: 16px;
 }
 
-body hr {
-  height: 4px;
-  padding: 0;
-  margin: 16px 0;
-  background-color: var(--nord5);
-  border: 0 none;
-}
-
 body ul,
 body ol {
   padding-left: 1.25em;
@@ -406,9 +403,9 @@ body dl dd {
 
 body blockquote {
   padding: 10px 15px;
-  background-color: var(--nord3);
-  color: var(--nord4);
-  border-left: 4px solid var(--nord5);
+  background-color: rgba(var(--layer1), 0.7);
+  color: whitesmoke;
+  border-left: 4px solid var(--indigo);
 }
 
 body blockquote > :first-child {
@@ -557,8 +554,6 @@ div.footer {
   border-radius: 16px;
   background-color: rgba(var(--layer1), 0.45);
   color: whitesmoke;
-  /* background-color: var(--nord2); */
-  /* color: var(--nord4); */
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);
 }
 
