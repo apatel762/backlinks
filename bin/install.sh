@@ -25,9 +25,11 @@ log() {
 
 require date "logging during script execution"
 require python3 "for creating the virtual env that the scripts will work in"
+require wget "for downloading required files from the internet"
+require sha256sum "for verifying integrity of downloaded files"
 
 # ---------------------------------------------------------------------------
-# VARIABLES
+# VARIABLES & FUNCTIONS
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -38,17 +40,84 @@ cleanup() {
 
 trap cleanup EXIT
 
+check_venv() {
+    log "checking for venv..."
+    if [ ! -d "venv" ]; then
+        log "could not find a venv"
+        log "creating one with version: $(python3 --version)"
+        python3 -m venv venv
+    else
+        log "venv already exists - skipping"
+    fi
+}
+
+# desc: download a file from a CDN and check the sha256 checksum for it
+# args: $1 = file name
+#       $2 = url to file
+#       $3 = expected sha256 hash of file
+#       $4 = path to the folder where the file should go
+check_file_from_CDN() {
+    local FILE_NAME
+    local URL
+    local SHA256HASH
+    local FOLDER
+
+    FILE_NAME="$1"
+    URL="$2"
+    SHA256HASH="$3"
+    FOLDER="$4"
+
+    log "$FILE_NAME: searching for file..."
+    if [ ! -f "$FOLDER/$FILE_NAME" ]; then
+        log "$FILE_NAME: not present locally"
+        log "$FILE_NAME: downloading from: $URL"
+        wget --quiet "$URL" --directory-prefix "$FOLDER"
+    else
+        log "$FILE_NAME: already present - skipping download"
+    fi
+
+    log "$FILE_NAME: verifying sha256 checksum"
+    # sha256sum expects the below format with the two space gap
+    # hash  path/to/file
+    echo "$SHA256HASH  $FOLDER/$FILE_NAME" \
+        | sha256sum --check --status || oops "$FILE_NAME: sha256 checksum of $URL is not correct!"
+    log "$FILE_NAME: all good!"
+}
+
 # ---------------------------------------------------------------------------
 # MAIN SCRIPT EXECUTION
 
-log "checking for venv..."
-if [ ! -d "venv" ]; then
-    log "could not find a venv"
-    log "creating one with version: $(python3 --version)"
-    python3 -m venv venv
-else
-    log "venv already exists - skipping"
-fi
+check_venv
+check_file_from_CDN \
+    "URI.js" \
+    "https://unpkg.com/URIjs@1.16.1/src/URI.js" \
+    "05ddd2f5c3579c0223737e77a5053e18ba7a1a3177e551179de59c8423fbabe8" \
+    "$DIR/js"
+check_file_from_CDN \
+    "vis-network.min.js" \
+    "https://unpkg.com/vis-network@8.2.0/dist/vis-network.min.js" \
+    "105faa6ae448f12aa915ccba9ac0c1dc7d492323fdac5c60506c924c8fa74d9c" \
+    "$DIR/js"
+check_file_from_CDN \
+    "popper.min.js" \
+    "https://unpkg.com/@popperjs/core@2.6.0/dist/umd/popper.min.js" \
+    "4efa894b85e3c9b1d30d13ed6c3ee0f5320af9f1a3d20ec2838467e464c4f5a7" \
+    "$DIR/js"
+check_file_from_CDN \
+    "tippy-bundle.umd.min.js" \
+    "https://unpkg.com/tippy.js@6.2.7/dist/tippy-bundle.umd.min.js" \
+    "c23d828386f6ebf0f34d225b0f4c499c20e484cc57951e1c4c9c86560a395dd6" \
+    "$DIR/js"
+check_file_from_CDN \
+    "light.css" \
+    "https://unpkg.com/tippy.js@6.2.3/themes/light.css" \
+    "c9ef454615fbb43862cedc020f52eaea3d6dab3fd0c67d70b96c6aa938593ab8" \
+    "$DIR/css"
+check_file_from_CDN \
+    "evergreen.css" \
+    "https://unpkg.com/@csstools/normalize.css@11.0.1/evergreen.css" \
+    "43d2a454581c4eeca4581bfce1b754f8d5b67c0e8b2c16acc82ed385c76460a4" \
+    "$DIR/css"
 
 # ---------------------------------------------------------------------------
 # CLEAN EXIT

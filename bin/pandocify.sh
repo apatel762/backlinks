@@ -85,8 +85,10 @@ do_pandoc_conversion() {
         -t html5 \
         -o "$HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html" \
         --lua-filter="$DIR/links_to_html.lua" \
-        --include-in-header="$DIR/meta.html" \
-        --metadata pagetitle="$(first_line "$FILE")"
+        --include-in-header="$DIR/meta/meta.html" \
+        --metadata pagetitle="$(first_line "$FILE")" \
+        --include-before-body="$DIR/meta/meta-before-body.html" \
+        --include-after-body="$DIR/meta/meta-after-body.html"
 }
 
 mkdir -p "$HTML_FOLDER_REL"  
