@@ -9,11 +9,12 @@ html/
 # JS files that get downloaded by the installer but don't need to be
 # checked into version control (because they would pollute the git history
 # every time you update them)
-bin/URI.js
-bin/vis-network.min.js
-bin/popper.min.js
-bin/tippy-bundle.umd.min.js
-bin/light.css
+bin/js/URI.js
+bin/js/vis-network.min.js
+bin/js/popper.min.js
+bin/js/tippy-bundle.umd.min.js
+bin/css/light.css
+bin/css/evergreen.css
 
 # ------------------------------------------------------------------------
 # Other stuff
