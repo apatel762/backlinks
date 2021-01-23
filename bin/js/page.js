@@ -116,7 +116,11 @@ function fetchNote(href, level, animate = false) {
           // the second level will be really wide to cover up the blur
           // so if we scroll into view it'll take up the whole screen
           if (level + 1 !== 2) {
-            element.scrollIntoView();
+            element.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+              inline: 'center'
+            });
           }
           if (animate) {
             element.animate([{ opacity: 0 }, { opacity: 1 }], animationLength);
@@ -224,11 +228,63 @@ function initializePreviews(page, level) {
                                                                      : "top"
                 });
 
-                element.addEventListener("click", function (e) {
+                element.addEventListener("click", function(e) {
                   if (!e.ctrlKey && !e.metaKey) {
-                      e.preventDefault();
+                    // do substring on target URL to remove the leading '/'
+                    const currentUrl = e.view.window.location.href
+                    const targetUrl = new URL(element.href).pathname.substring(1)
+
+                    // no matter what happens, we don't want the default behaviour
+                    // of opening the page normally; we will handle it
+                    e.preventDefault();
+
+                    if (level >= 2 && currentUrl.includes(targetUrl)) {
+                      // the page we've clicked on is already open, so find it
+                      // and scroll to it
+                      const url = new URL(document.URL)
+                      // split().join() is a hacky way of doing .replaceAll()
+                      // which doesn't work for some reason
+                      const urlsThatAreOpen = url.href
+                        .split(url.origin + '/').join('')
+                        .split('?').join('')
+                        .split('&').join('')
+                        .split('stackedNotes=%2F')
+                        .filter(o => o !== "")
+                      console.log('urlsThatAreOpen = ' + urlsThatAreOpen)
+                      console.log('you clicked on ' + targetUrl)
+
+                      if (urlsThatAreOpen.length + 1 < level) {
+                        // something went wrong loading the page, just stack
+                        // the note; but log some info first
+                        console.log('something went wrong, we should be scrolling but we are not')
+                        stackNote(element.href, this.dataset.level);
+                        fetchNote(element.href, this.dataset.level, (animate = true));
+                      }
+                      else {
+                        // need index, so can't use .forEach loop
+                        for (let i = 0; i < urlsThatAreOpen.length; i++) {
+                          const openUrl = urlsThatAreOpen[i]
+                          console.log(openUrl + ' vs ' + targetUrl)
+                          if (targetUrl === openUrl) {
+                            // the URL we want to go to is already open, so scroll to it
+                            // +1 because the first page isn't a stacked page
+                            // +1 because stacked page indices start at one
+                            console.log('scrolling to level ' + (i+2))
+                            document
+                              .querySelector('[data-level = "' + (i + 2) + '"]')
+                              .scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center',
+                                inline: 'center'
+                              })
+                          }
+                        }
+                      }
+                    }
+                    else {
                       stackNote(element.href, this.dataset.level);
                       fetchNote(element.href, this.dataset.level, (animate = true));
+                    }
                   }
                 });
             };
