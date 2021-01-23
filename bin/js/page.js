@@ -1,6 +1,6 @@
 let pages = [window.location.pathname];
 let switchDirectionWindowWidth = 900;
-let animationLength = 200;
+let animationLength = 500;
 let nodeDataset = new vis.DataSet();
 let edgeDataset = new vis.DataSet();
 
@@ -113,7 +113,11 @@ function fetchNote(href, level, animate = false) {
         function (element, level) {
           element.dataset.level = level + 1;
           initializePreviews(element, level + 1);
-          element.scrollIntoView();
+          // the second level will be really wide to cover up the blur
+          // so if we scroll into view it'll take up the whole screen
+          if (level + 1 !== 2) {
+            element.scrollIntoView();
+          }
           if (animate) {
             element.animate([{ opacity: 0 }, { opacity: 1 }], animationLength);
           }
@@ -215,18 +219,17 @@ function initializePreviews(page, level) {
             let ct = await response.headers.get("content-type");
             if (ct.includes("text/html")) {
                 createPreview(element, fragment.content.querySelector('.page').outerHTML, {
-                placement:
-                    window.innerWidth > switchDirectionWindowWidth
-                    ? "right"
-                    : "top",
+                  placement:
+                      window.innerWidth > switchDirectionWindowWidth ? "right"
+                                                                     : "top"
                 });
 
                 element.addEventListener("click", function (e) {
-                if (!e.ctrlKey && !e.metaKey) {
-                    e.preventDefault();
-                    stackNote(element.href, this.dataset.level);
-                    fetchNote(element.href, this.dataset.level, (animate = true));
-                }
+                  if (!e.ctrlKey && !e.metaKey) {
+                      e.preventDefault();
+                      stackNote(element.href, this.dataset.level);
+                      fetchNote(element.href, this.dataset.level, (animate = true));
+                  }
                 });
             };
         }
