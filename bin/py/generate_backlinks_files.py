@@ -1,54 +1,36 @@
+import argparse
 import os
 import re
-import argparse
-import pathlib
 from typing import List, Tuple
 
 # regular expression for finding markdown style links
 # i.e. something like `[My Link](https://broadsilver.com)`
+from bin.py import util
+
 md_links = re.compile("\[(.*?)\]\((.*?)\)", re.DOTALL)
 
 
-def last_n_chars(s: str, n: int) -> str:
-    return s[-n::]
-
-
-def is_md(file_name: str) -> bool:
-    return last_n_chars(file_name, n=3) == '.md'
-
-
 def markdown_filenames(folder_path: str) -> List[str]:
-    return [fn for fn in os.listdir(folder_path) if is_md(file_name=fn)]
+    return [fn for fn in os.listdir(folder_path) if util.is_md(fn)]
 
 
-def html_link(link: str, display: str) -> str:
+def html_link(href: str, display: str) -> str:
     # for some reason pandoc doesn't change the .md to .html in backlinks
     # so the replacement here is a little hack to make it work
-    return f'<a href="{link.replace(".md", ".html")}">{display}</a>'
-
-
-def create_folder(location: str) -> None:
-    pathlib.Path(location).mkdir(parents=True, exist_ok=True)
-
-
-def first_line(file_path: str) -> str:
-    title = ''
-    with open(file_path, 'r') as f:
-        first_line = f.readline()
-        title = first_line[2:]
-    return title
+    return f'<a href="{href.replace(".md", ".html")}">{display}</a>'
 
 
 def backlinks_html(refs: List[Tuple[str, str]]) -> str:
     if len(refs) <= 0:
         return ''
 
-    txt: List[str] = []
-    txt.append('<div class="footer">')
-    txt.append('<h3>Links</h3>')
-    txt.append('<ul>')
-    for backlink, display in set(refs):
-        txt.append('<li>' + html_link(backlink, display) + '</li>')
+    txt: List[str] = [
+        '<div class="footer">',
+        '<h3>Links</h3>',
+        '<ul>'
+    ]
+    for backlink, link_display in set(refs):
+        txt.append('<li>' + html_link(backlink, link_display) + '</li>')
     txt.append('</ul>')
     # we don't close the div.footer that we opened here; pandoc will do that
     # for us when it generates the final HTML. Why do this? so when pandoc
@@ -80,7 +62,7 @@ if __name__ == '__main__':
     file_names = markdown_filenames(folder_path=notes_folder)
     print(f'Found {len(file_names)} files in {notes_folder}')
 
-    create_folder(location=backlinks_folder)
+    util.create_folder(location=backlinks_folder)
     print(f'Will put backlinks into: {backlinks_folder}/')
 
     # NOTE: current backlink searching is slow... O(n^2)
@@ -100,10 +82,10 @@ if __name__ == '__main__':
                 # the results of re.findall() will look something like
                 # [('Page B', 'pageB.md')]
                 # where the link in markdown would've been [Page B](pageB.md)
-                for display, link in md_links.findall(contents):
+                for _, link in md_links.findall(contents):
                     if link == file_name:
                         print(f'{file_name}: referenced by {other_file}')
-                        title = first_line(f'{notes_folder}/{other_file}')
+                        title = util.first_line(f'{notes_folder}/{other_file}')
                         references.append((other_file, title))
 
         # write out all of the backlinks using some properly styled markdown.
