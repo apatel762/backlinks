@@ -10,6 +10,10 @@ html/
 # checked into version control (because they would pollute the git history
 # every time you update them)
 bin/URI.js
+bin/vis-network.min.js
+bin/popper.min.js
+bin/tippy-bundle.umd.min.js
+bin/light.css
 
 # ------------------------------------------------------------------------
 # Other stuff

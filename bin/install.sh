@@ -51,33 +51,58 @@ check_venv() {
     fi
 }
 
-check_URIjs() {
+# desc: download a file from a CDN and check the sha256 checksum for it
+# args: $1 = file name
+#       $2 = url to file
+#       $3 = expected sha256 hash of file
+check_file_from_CDN() {
+    local FILE_NAME
     local URL
     local SHA256SUM
 
-    # the sum variable is the output of sha256sum bin/URI.js
-    URL="https://unpkg.com/URIjs@1.16.1/src/URI.js"
-    SHA256SUM="05ddd2f5c3579c0223737e77a5053e18ba7a1a3177e551179de59c8423fbabe8  $DIR/URI.js"
+    FILE_NAME="$1"
+    URL="$2"
+    SHA256SUM="$3"
 
-    log "checking for URI.js..."
-    if [ ! -f "$DIR/URI.js" ]; then
-        log "you don't have URI.js locally"
-        log "downloading from $URL"
+    log "$FILE_NAME: searching for file..."
+    if [ ! -f "$DIR/$FILE_NAME" ]; then
+        log "$FILE_NAME: not present locally"
+        log "$FILE_NAME: downloading from: $URL"
         wget --quiet "$URL" --directory-prefix "$DIR"
     else
-        log "you already have URI.js locally - skipping download"
+        log "$FILE_NAME: already present - skipping download"
     fi
 
-    log "verifying sha256 checksum for local copy of URI.js ..."
+    log "$FILE_NAME: verifying sha256 checksum"
     echo "$SHA256SUM" \
-        | sha256sum --check --status || oops "sha256 checksum of $URL is not correct!"
+        | sha256sum --check --status || oops "$FILE_NAME: sha256 checksum of $URL is not correct!"
+    log "$FILE_NAME: all good!"
 }
 
 # ---------------------------------------------------------------------------
 # MAIN SCRIPT EXECUTION
 
 check_venv
-check_URIjs
+check_file_from_CDN \
+    "URI.js" \
+    "https://unpkg.com/URIjs@1.16.1/src/URI.js" \
+    "05ddd2f5c3579c0223737e77a5053e18ba7a1a3177e551179de59c8423fbabe8  $DIR/URI.js"
+check_file_from_CDN \
+    "vis-network.min.js" \
+    "https://unpkg.com/vis-network@8.2.0/dist/vis-network.min.js" \
+    "105faa6ae448f12aa915ccba9ac0c1dc7d492323fdac5c60506c924c8fa74d9c  $DIR/vis-network.min.js"
+check_file_from_CDN \
+    "popper.min.js" \
+    "https://unpkg.com/@popperjs/core@2.6.0/dist/umd/popper.min.js" \
+    "4efa894b85e3c9b1d30d13ed6c3ee0f5320af9f1a3d20ec2838467e464c4f5a7  $DIR/popper.min.js"
+check_file_from_CDN \
+    "tippy-bundle.umd.min.js" \
+    "https://unpkg.com/tippy.js@6.2.7/dist/tippy-bundle.umd.min.js" \
+    "c23d828386f6ebf0f34d225b0f4c499c20e484cc57951e1c4c9c86560a395dd6  $DIR/tippy-bundle.umd.min.js"
+check_file_from_CDN \
+    "light.css" \
+    "https://unpkg.com/tippy.js@6.2.3/themes/light.css" \
+    "c9ef454615fbb43862cedc020f52eaea3d6dab3fd0c67d70b96c6aa938593ab8  $DIR/light.css"
 
 # ---------------------------------------------------------------------------
 # CLEAN EXIT
