@@ -16,22 +16,10 @@ The CSS:
 
 USAGE
 
-There are a few variables at the top of the Makefile that you will need
-to modify before running doing anything:
+Modify the variables at the top of the Makefile and then once you're
+sure that everything is in the right place, just run:
 
-  MARKDOWN_FILES_LOCATION
-  BACKLINKS_TEMP_FOLDER
-  HTML_FOLDER
+  make
 
-Once you've made the changes in the Makefile, all you need to do is run
-the `gen` target to generate a static site (with backlinks between pages
-where needed) from your markdown notes:
-
-  make gen
-
-If you're happy with the results, copy the HTML files onto your web
-server and delete the ones that are on your machine using:
-
-  make clean
-
-...and that should be all.
+from this git repo and your Markdown files will be turned into a static
+site.

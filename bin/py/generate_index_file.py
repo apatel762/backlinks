@@ -1,35 +1,22 @@
 import argparse
 import os
-import pathlib
+from logging import Logger
 from typing import List, Tuple
 
-
-def last_n_chars(s: str, n: int) -> str:
-    return s[-n::]
-
-
-def is_md(file_name: str) -> bool:
-    return last_n_chars(file_name, n=3) == '.md'
-
-
-def first_line(file_path: str) -> str:
-    title = ''
-    with open(file_path, 'r') as f:
-        first_line = f.readline()
-        title = first_line[2:]
-    return title
+import util
 
 
 def link_data(folder_path: str) -> List[Tuple[str, str]]:
     tmp = []
-    for file_name in os.listdir(folder_path):
-        if not is_md(file_name):
+    for file_name_ in os.listdir(folder_path):
+        if not util.is_md(file_name_):
             continue
 
-        title = first_line(folder_path + '/' + file_name)
-        tmp.append((file_name, title))
+        note_title = util.first_line(folder_path + '/' + file_name_)
+        tmp.append((file_name_, note_title))
 
     return tmp
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -44,11 +31,12 @@ if __name__ == '__main__':
         help='The absolute path of your notes folder'
     )
     args = parser.parse_args()
+    logger: Logger = util.get_logger(logger_name='generate_index_file')
 
     temp_folder = args.temp_folder
     notes_folder = args.notes_folder
 
-    print(f'creating index.md in {temp_folder}')
+    logger.info(f'creating index.md in {temp_folder}')
 
     data = link_data(folder_path=notes_folder)
 
