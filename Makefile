@@ -27,6 +27,8 @@ gen: install clean
 		"$(MARKDOWN_FILES_LOCATION)" \
 		"$(TEMP_FOLDER)" \
 		"$(HTML_FOLDER)"
+	@mkdir -p "$(HTML_FOLDER)/css"
+	@cp -vu bin/style.css "$(HTML_FOLDER)/css"
 
 install:
 	@bin/install.sh
