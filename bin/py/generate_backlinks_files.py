@@ -1,12 +1,14 @@
 import argparse
 import os
 import re
+from logging import Logger
 from typing import List, Tuple
 
 # regular expression for finding markdown style links
 # i.e. something like `[My Link](https://broadsilver.com)`
-from bin.py import util
+import util
 
+# noinspection RegExpRedundantEscape
 md_links = re.compile("\[(.*?)\]\((.*?)\)", re.DOTALL)
 
 
@@ -55,15 +57,16 @@ if __name__ == '__main__':
              'files to be stored when they are generated.'
     )
     args = parser.parse_args()
+    logger: Logger = util.get_logger(logger_name='generate_backlinks_files')
 
     notes_folder = args.notes_folder
     backlinks_folder = args.temp_folder
 
     file_names = markdown_filenames(folder_path=notes_folder)
-    print(f'Found {len(file_names)} files in {notes_folder}')
+    logger.info(f'Found {len(file_names)} files in {notes_folder}')
 
     util.create_folder(location=backlinks_folder)
-    print(f'Will put backlinks into: {backlinks_folder}/')
+    logger.info(f'Will put backlinks into: {backlinks_folder}/')
 
     # NOTE: current backlink searching is slow... O(n^2)
     for file_name in file_names:
@@ -84,7 +87,7 @@ if __name__ == '__main__':
                 # where the link in markdown would've been [Page B](pageB.md)
                 for _, link in md_links.findall(contents):
                     if link == file_name:
-                        print(f'{file_name}: referenced by {other_file}')
+                        logger.info(f'{file_name}: referenced by {other_file}')
                         title = util.first_line(f'{notes_folder}/{other_file}')
                         references.append((other_file, title))
 

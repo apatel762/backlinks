@@ -1,8 +1,9 @@
 import argparse
 import os
+from logging import Logger
 from typing import List, Tuple
 
-from bin.py import util
+import util
 
 
 def link_data(folder_path: str) -> List[Tuple[str, str]]:
@@ -30,11 +31,12 @@ if __name__ == '__main__':
         help='The absolute path of your notes folder'
     )
     args = parser.parse_args()
+    logger: Logger = util.get_logger(logger_name='generate_index_file')
 
     temp_folder = args.temp_folder
     notes_folder = args.notes_folder
 
-    print(f'creating index.md in {temp_folder}')
+    logger.info(f'creating index.md in {temp_folder}')
 
     data = link_data(folder_path=notes_folder)
 

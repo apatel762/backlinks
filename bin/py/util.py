@@ -1,4 +1,18 @@
+import logging
 import pathlib
+import sys
+
+
+def get_logger(logger_name: str) -> logging.Logger:
+    handler = logging.StreamHandler(stream=sys.stdout)
+    handler.setLevel(logging.INFO)
+    handler.setFormatter(logging.Formatter('%(name)s: %(levelname)s - %(message)s'))
+
+    logger = logging.getLogger(name=logger_name)
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+
+    return logger
 
 
 def last_n_chars(s: str, n: int) -> str:
