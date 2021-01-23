@@ -240,7 +240,9 @@ function initializePreviews(page, level) {
 
                     if (level >= 2 && currentUrl.includes(targetUrl)) {
                       // the page we've clicked on is already open, so find it
-                      // and scroll to it
+                      // and scroll to it, but only if we've got one stacked page
+                      // open already. If we've only got the starting window open
+                      // then we can safely skip all of this (hence the level >= 2)
                       const url = new URL(document.URL)
                       // split().join() is a hacky way of doing .replaceAll()
                       // which doesn't work for some reason
@@ -250,12 +252,8 @@ function initializePreviews(page, level) {
                         .split('&').join('')
                         .split('stackedNotes=%2F')
                         .filter(o => o !== "")
-                      console.log('urlsThatAreOpen = ' + urlsThatAreOpen)
-                      console.log('you clicked on ' + targetUrl)
 
                       if (urlsThatAreOpen.length + 1 < level) {
-                        // something went wrong loading the page, just stack
-                        // the note; but log some info first
                         console.log('something went wrong, we should be scrolling but we are not')
                         stackNote(element.href, this.dataset.level);
                         fetchNote(element.href, this.dataset.level, (animate = true));
@@ -264,12 +262,10 @@ function initializePreviews(page, level) {
                         // need index, so can't use .forEach loop
                         for (let i = 0; i < urlsThatAreOpen.length; i++) {
                           const openUrl = urlsThatAreOpen[i]
-                          console.log(openUrl + ' vs ' + targetUrl)
                           if (targetUrl === openUrl) {
                             // the URL we want to go to is already open, so scroll to it
-                            // +1 because the first page isn't a stacked page
-                            // +1 because stacked page indices start at one
-                            console.log('scrolling to level ' + (i+2))
+                            // index +1 because the first page isn't a stacked page
+                            // index +1 because stacked page indices start at one
                             document
                               .querySelector('[data-level = "' + (i + 2) + '"]')
                               .scrollIntoView({
