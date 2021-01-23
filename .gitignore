@@ -15,6 +15,7 @@ bin/js/popper.min.js
 bin/js/tippy-bundle.umd.min.js
 bin/css/light.css
 bin/css/evergreen.css
+bin/css/*.woff2
 
 # ------------------------------------------------------------------------
 # Other stuff
