@@ -103,7 +103,7 @@ function destroyPreviews(page) {
 
 let tippyOptions = {
   allowHTML: true,
-  theme: "light",
+  theme: "dark",
   interactive: true,
   interactiveBorder: 10,
   delay: 500,
@@ -113,19 +113,21 @@ let tippyOptions = {
   placement: "right",
 };
 
-function createPreview(link, html, overrideOptions) {
+function createPreview(link, overrideOptions) {
   level = Number(link.dataset.level);
-    iframe = document.createElement('iframe');
-    iframe.width = "400px";
-    iframe.height = "300px";
-    iframe.srcdoc = html;
+
+  iframe = document.createElement('iframe');
+  iframe.width = "400px";
+  iframe.height = "300px";
+  iframe.src = link.href
+
   tip = tippy(
     link,
     Object.assign(
       {},
       tippyOptions,
       {
-        content: iframe.outerHTML
+        content: iframe
       },
       overrideOptions
     )
@@ -151,77 +153,75 @@ function initializePreviews(page, level) {
         rawHref.includes(".svg")
       )
     ) {
-        var prefetchLink = element.href;
-        async function myFetch() {
-            let response = await fetch(prefetchLink);
-            let fragment = document.createElement("template");
-            fragment.innerHTML = await response.text();
-            let ct = await response.headers.get("content-type");
-            if (ct.includes("text/html")) {
-                createPreview(element, fragment.content.querySelector('.page').outerHTML, {
-                  placement:
-                      window.innerWidth > switchDirectionWindowWidth ? "right"
-                                                                     : "top"
-                });
+      var prefetchLink = element.href;
+      async function myFetch() {
+        let response = await fetch(prefetchLink);
+        let fragment = document.createElement("template");
+        fragment.innerHTML = await response.text();
+        let ct = response.headers.get("content-type");
+        if (ct.includes("text/html")) {
+          createPreview(element, {
+            placement: window.innerWidth > switchDirectionWindowWidth ? "right" : "top"
+          });
 
-                element.addEventListener("click", function(e) {
-                  if (!e.ctrlKey && !e.metaKey) {
-                    // do substring on target URL to remove the leading '/'
-                    const currentUrl = e.view.window.location.href
-                    const targetUrl = new URL(element.href).pathname.substring(1)
+          element.addEventListener("click", function (e) {
+            if (!e.ctrlKey && !e.metaKey) {
+              // do substring on target URL to remove the leading '/'
+              const currentUrl = e.view.window.location.href
+              const targetUrl = new URL(element.href).pathname.substring(1)
 
-                    // no matter what happens, we don't want the default behaviour
-                    // of opening the page normally; we will handle it
-                    e.preventDefault();
+              // no matter what happens, we don't want the default behaviour
+              // of opening the page normally; we will handle it
+              e.preventDefault();
 
-                    if (level >= 2 && currentUrl.includes(targetUrl)) {
-                      // the page we've clicked on is already open, so find it
-                      // and scroll to it, but only if we've got one stacked page
-                      // open already. If we've only got the starting window open
-                      // then we can safely skip all of this (hence the level >= 2)
-                      const url = new URL(document.URL)
-                      // split().join() is a hacky way of doing .replaceAll()
-                      // which doesn't work for some reason
-                      const urlsThatAreOpen = url.href
-                        .split(url.origin + '/').join('')
-                        .split('?').join('')
-                        .split('&').join('')
-                        .split('stackedNotes=%2F')
-                        .filter(o => o !== "")
+              if (level >= 2 && currentUrl.includes(targetUrl)) {
+                // the page we've clicked on is already open, so find it
+                // and scroll to it, but only if we've got one stacked page
+                // open already. If we've only got the starting window open
+                // then we can safely skip all of this (hence the level >= 2)
+                const url = new URL(document.URL)
+                // split().join() is a hacky way of doing .replaceAll()
+                // which doesn't work for some reason
+                const urlsThatAreOpen = url.href
+                  .split(url.origin + '/').join('')
+                  .split('?').join('')
+                  .split('&').join('')
+                  .split('stackedNotes=%2F')
+                  .filter(o => o !== "")
 
-                      if (urlsThatAreOpen.length + 1 < level) {
-                        console.log('something went wrong, we should be scrolling but we are not')
-                        stackNote(element.href, this.dataset.level);
-                        fetchNote(element.href, this.dataset.level, (animate = true));
-                      }
-                      else {
-                        // need index, so can't use .forEach loop
-                        for (let i = 0; i < urlsThatAreOpen.length; i++) {
-                          const openUrl = urlsThatAreOpen[i]
-                          if (targetUrl === openUrl) {
-                            // the URL we want to go to is already open, so scroll to it
-                            // index +1 because the first page isn't a stacked page
-                            // index +1 because stacked page indices start at one
-                            document
-                              .querySelector('[data-level = "' + (i + 2) + '"]')
-                              .scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'center',
-                                inline: 'center'
-                              })
-                          }
-                        }
-                      }
-                    }
-                    else {
-                      stackNote(element.href, this.dataset.level);
-                      fetchNote(element.href, this.dataset.level, (animate = true));
+                if (urlsThatAreOpen.length + 1 < level) {
+                  console.log('something went wrong, we should be scrolling but we are not')
+                  stackNote(element.href, this.dataset.level);
+                  fetchNote(element.href, this.dataset.level, (animate = true));
+                }
+                else {
+                  // need index, so can't use .forEach loop
+                  for (let i = 0; i < urlsThatAreOpen.length; i++) {
+                    const openUrl = urlsThatAreOpen[i]
+                    if (targetUrl === openUrl) {
+                      // the URL we want to go to is already open, so scroll to it
+                      // index +1 because the first page isn't a stacked page
+                      // index +1 because stacked page indices start at one
+                      document
+                        .querySelector('[data-level = "' + (i + 2) + '"]')
+                        .scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'center',
+                          inline: 'center'
+                        })
                     }
                   }
-                });
-            };
-        }
-        return myFetch();
+                }
+              }
+              else {
+                stackNote(element.href, this.dataset.level);
+                fetchNote(element.href, this.dataset.level, (animate = true));
+              }
+            }
+          });
+        };
+      }
+      return myFetch();
     }
   });
 }
