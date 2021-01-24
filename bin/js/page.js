@@ -103,7 +103,7 @@ function destroyPreviews(page) {
 
 let tippyOptions = {
   allowHTML: true,
-  theme: "light",
+  theme: "dark",
   interactive: true,
   interactiveBorder: 10,
   delay: 500,
