@@ -106,10 +106,6 @@ check_file_from_CDN \
     "https://unpkg.com/tippy.js@6.2.7/dist/tippy-bundle.umd.min.js" \
     "c23d828386f6ebf0f34d225b0f4c499c20e484cc57951e1c4c9c86560a395dd6" \
     "$DIR/js"
-check_file_from_CDN \
-    "https://unpkg.com/tippy.js@6.2.3/themes/light.css" \
-    "c9ef454615fbb43862cedc020f52eaea3d6dab3fd0c67d70b96c6aa938593ab8" \
-    "$DIR/css"
 
 # sane defaults for CSS
 check_file_from_CDN \

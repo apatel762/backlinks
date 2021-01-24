@@ -113,19 +113,21 @@ let tippyOptions = {
   placement: "right",
 };
 
-function createPreview(link, html, overrideOptions) {
+function createPreview(link, overrideOptions) {
   level = Number(link.dataset.level);
-    iframe = document.createElement('iframe');
-    iframe.width = "400px";
-    iframe.height = "300px";
-    iframe.srcdoc = html;
+
+  iframe = document.createElement('iframe');
+  iframe.width = "400px";
+  iframe.height = "300px";
+  iframe.src = link.href
+
   tip = tippy(
     link,
     Object.assign(
       {},
       tippyOptions,
       {
-        content: iframe.outerHTML
+        content: iframe
       },
       overrideOptions
     )
@@ -156,13 +158,11 @@ function initializePreviews(page, level) {
             let response = await fetch(prefetchLink);
             let fragment = document.createElement("template");
             fragment.innerHTML = await response.text();
-            let ct = await response.headers.get("content-type");
+            let ct = response.headers.get("content-type");
             if (ct.includes("text/html")) {
-                createPreview(element, fragment.content.querySelector('.page').outerHTML, {
-                  placement:
-                      window.innerWidth > switchDirectionWindowWidth ? "right"
-                                                                     : "top"
-                });
+              createPreview(element, {
+                placement: window.innerWidth > switchDirectionWindowWidth ? "right" : "top"
+              });
 
                 element.addEventListener("click", function(e) {
                   if (!e.ctrlKey && !e.metaKey) {
