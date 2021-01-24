@@ -43,9 +43,16 @@ if __name__ == '__main__':
     with open(f'{temp_folder}/index.md', 'w') as f:
         f.write('# Index')
         f.write('\n')
-        f.write(f'You have {len(data)} permanotes in your collection')
+        f.write(f'You have {len(data)} permanotes in your collection.')
+        for file_name, title in sorted(data, reverse=True):
+            if file_name == 'now.md':
+                f.write(' ')
+                f.write('A good place to start would be at the ')
+                f.write(f'[{title}]({file_name}) page.')
         f.write('\n')
         f.write('\n')
-        for file_name, title in data:
+        for file_name, title in sorted(data, reverse=True):
+            if file_name == 'now.md':
+                continue
             link = file_name.replace('.md', '.html')
             f.write(f'- [{title}]({link})\n')
