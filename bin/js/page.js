@@ -1,67 +1,6 @@
 let pages = [window.location.pathname];
 let switchDirectionWindowWidth = 900;
 let animationLength = 500;
-let nodeDataset = new vis.DataSet();
-let edgeDataset = new vis.DataSet();
-
-var tempNetwork;
-
-async function loadNetworkNodes() {
-    let response = await fetch("./graph.json");
-    let json = await response.json();
-    var roamData = json;
-    tempNetwork = new vis.Network(document.getElementById("temp-network"),
-                                  {nodes: new vis.DataSet(roamData.nodes),
-                                   edges: new vis.DataSet(roamData.edges)},
-                                  {layout:{improvedLayout: false},
-                                   physics:{enabled: false}});
-    drawBufferNetwork(roamData);
-}
-
-function collectConnectedNodes(
-    allNodes, baseNode, distance, alreadyConnected) {
-    if (distance < 1) {
-        return new Set([baseNode]); // base case for recursion
-    }
-
-    let connectedNodes = new Set([baseNode]);
-    const neighbours = tempNetwork.getConnectedNodes(baseNode);
-
-    for (let i = 0; i < neighbours.length; i++) {
-        // Skip this node if we've already seen it. Helps with the performance.
-        if (alreadyConnected && alreadyConnected.has(neighbours[i])) continue;
-        var neighbourConnectedNodes = collectConnectedNodes(
-            allNodes, neighbours[i], distance - 1, connectedNodes);
-        for (let node of neighbourConnectedNodes) {
-            connectedNodes.add(node);
-        }
-    }
-    return connectedNodes;
-}
-
-function drawBufferNetwork(roamData) {
-    const nodeDataset = new vis.DataSet(roamData.nodes);
-    const nodes = nodeDataset.get({returnType:"Object"});
-    const connectedNodes = Array.from(
-        collectConnectedNodes(nodes, currentNode, 1));
-    console.log(connectedNodes);
-    let bufferNodes = [];
-    for (let i = 0; i < connectedNodes.length; i++) {
-        bufferNodes.push(nodes[connectedNodes[i]]);
-    }
-    const bufferContainer = document.getElementById("buffer-network");
-    console.log(bufferNodes);
-    console.log(roamData.edges);
-    let options = {              nodes: {shape: "dot"},
-        interaction: {hover: true},
-                                 layout: {improvedLayout: true}};
-    bufferNetwork = new vis.Network(
-        bufferContainer,
-        {nodes:bufferNodes,
-         edges:roamData.edges},
-        options
-    );
-}
 
 function stackNote(href, level) {
   level = Number(level) || pages.length;
@@ -113,8 +52,8 @@ function fetchNote(href, level, animate = false) {
         function (element, level) {
           element.dataset.level = level + 1;
           initializePreviews(element, level + 1);
-          // the second level will be really wide to cover up the blur
-          // so if we scroll into view it'll take up the whole screen
+          // level 2 will be really wide to cover up the blur so if we scroll
+          // into view it'll take up the whole screen
           if (level + 1 !== 2) {
             element.scrollIntoView({
               behavior: 'smooth',
@@ -187,9 +126,6 @@ function createPreview(link, html, overrideOptions) {
       tippyOptions,
       {
         content: iframe.outerHTML
-          // '<iframe width="400px" height="300px" srcdoc="' +
-          //     escape(html) +
-          // '"></iframe>',
       },
       overrideOptions
     )
@@ -296,7 +232,6 @@ window.addEventListener("popstate", function (event) {
 });
 
 window.onload = function () {
-  //loadNetworkNodes();
   initializePreviews(document.querySelector(".page"));
 
   uri = URI(window.location);

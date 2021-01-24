@@ -97,12 +97,6 @@ check_file_from_CDN \
     "05ddd2f5c3579c0223737e77a5053e18ba7a1a3177e551179de59c8423fbabe8" \
     "$DIR/js"
 
-# graph networking
-check_file_from_CDN \
-    "https://unpkg.com/vis-network@8.2.0/dist/vis-network.min.js" \
-    "105faa6ae448f12aa915ccba9ac0c1dc7d492323fdac5c60506c924c8fa74d9c" \
-    "$DIR/js"
-
 # popups
 check_file_from_CDN \
     "https://unpkg.com/@popperjs/core@2.6.0/dist/umd/popper.min.js" \
