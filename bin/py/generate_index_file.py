@@ -2,6 +2,7 @@ import argparse
 import os
 from logging import Logger
 from typing import List, Tuple
+import sys
 
 import util
 
@@ -40,19 +41,17 @@ if __name__ == '__main__':
 
     data = link_data(folder_path=notes_folder)
 
+    for file_name, title in sorted(data, reverse=True):
+        if file_name == 'index.md':
+            logger.info('aborting! you already have an index.md')
+            sys.exit(0)
+
     with open(f'{temp_folder}/index.md', 'w') as f:
         f.write('# Index')
         f.write('\n')
         f.write(f'You have {len(data)} permanotes in your collection.')
-        for file_name, title in sorted(data, reverse=True):
-            if file_name == 'now.md':
-                f.write(' ')
-                f.write('A good place to start would be at the ')
-                f.write(f'[{title}]({file_name}) page.')
         f.write('\n')
         f.write('\n')
         for file_name, title in sorted(data, reverse=True):
-            if file_name == 'now.md':
-                continue
             link = file_name.replace('.md', '.html')
             f.write(f'- [{title}]({link})\n')
