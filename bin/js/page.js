@@ -41,10 +41,20 @@ function fetchNote(href, level, animate = false) {
     .then((response) => response.text())
     .then((text) => {
       unstackNotes(level);
+
       let container = document.querySelector(".ds-grid");
+      container.style.width = 576 * (level + 1) + "px";
+
       let fragment = document.createElement("template");
       fragment.innerHTML = text;
+
       let element = fragment.content.querySelector(".page");
+      element.setAttribute('z-index', level);
+      //https://stackoverflow.com/questions/2214387/setting-top-and-left-css-attributes
+      element.style.left = 40 * level + "px";
+      element.style.right = -585 + "px";
+      element.style.width = 576 + "px";
+
       container.appendChild(element);
       pages.push(href);
 
