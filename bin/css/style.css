@@ -64,57 +64,49 @@ body {
   box-sizing: border-box;
 }
 
-.page {
-  color: whitesmoke;
-  white-space: normal;
-  padding: 2rem 2rem 3rem 2rem;
-  display: inline-block;
-  width: 625px;
-  max-width: 100%;
-  height: 100% !important;
-  max-height: 100%;
-  overflow-y: auto;
-  vertical-align: top;
+.grid-container {
   box-sizing: border-box;
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
-/*
-first page is thinner than the others
-*/
-.page:first-of-type {
-  width: 500px;
+.ds-grid {
+  transition-duration: 0.1s;
+  flex-grow: 1;
+  display: flex;
+}
+
+.page {
+  color: whitesmoke;
+  left: 0px;
+  right: -585px;
+  width: 576px; /* change this in page.js if you change it here */
+  position: sticky;
+  position: -webkit-sticky;
+  max-width: 36rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  overflow-y: auto;
+  flex-shrink: 0;
+  flex-direction: column;
+  display: flex;
+
+  background-color: rgba(var(--layer0), 0.8);
+  backdrop-filter: blur(5px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.16), 0px 6px 12px rgba(0, 0, 0, 0.23);
 }
 
 /*
 only the first page should be blurred (i.e. have a lower transparency
 on the background), the rest should be solid
 */
-.page:not(:first-of-type) {
+/* .page:not(:first-of-type) {
   background-color: rgba(var(--layer0), 1);
-}
-
-/*
-the first page with a solid background should have rounded edges on the
-left
-*/
-.page:nth-of-type(2) {
-  border-radius: 2em 0em 0em 2em;
-}
-
-/*
-if the second page (the first solid background page) has no siblings
-after it then make it really long
-*/
-.page[data-level="2"]:last-child {
-  width: 100%;
-}
-.page[data-level="2"]:last-child > #content {
-  /*
-  even though the container will be huge, I want the content to have a
-  normal width
-  */
-  width: 625px;
-}
+} */
 
 a {
   background-color: transparent;
@@ -508,19 +500,6 @@ body kbd {
   border-bottom-color: #bbb;
   border-radius: 3px;
   box-shadow: inset 0 -1px 0 #bbb;
-}
-
-.grid-container {
-  flex: 1;
-  display: flex;
-  overflow-x: auto !important;
-  white-space: nowrap;
-  flex-grow: 1;
-}
-
-.ds-grid {
-  max-width: 100%;
-  flex-grow: 1;
 }
 
 iframe {
