@@ -40,14 +40,13 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
         logger.info('converting %s to html', file)
         # examples of using subprocess.run
         # https://www.programcreek.com/python/example/94463/subprocess.run
-        run: Union[CompletedProcess[Any], CompletedProcess[bytes]] = subprocess.run(
+        subprocess.run(
             args=[
                 'pandoc',
-                f'"{file_full_path}"',
-                f'"{file_backlinks}"',
+                file_full_path, file_backlinks,
                 '--from=markdown',
                 '--to=html5',
-                f'--output="{file_html}"'
+                f'--output={file_html}'
             ],
             env={
                 'PATH': os.environ['PATH']
