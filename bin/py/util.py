@@ -3,7 +3,10 @@ import os
 import pathlib
 import subprocess
 import sys
+from datetime import datetime
 from typing import List
+
+datetime_format = '%Y-%m-%dT%H%M%SZ'
 
 
 def get_logger(logger_name: str) -> logging.Logger:
@@ -61,3 +64,7 @@ def run(cmd: List[str]) -> None:
         check=True,
         text=True
     )
+
+
+def now_utc() -> str:
+    return datetime.utcnow().strftime(datetime_format)
