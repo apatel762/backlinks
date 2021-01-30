@@ -1,6 +1,9 @@
 import logging
+import os
 import pathlib
+import subprocess
 import sys
+from typing import List
 
 
 def get_logger(logger_name: str) -> logging.Logger:
@@ -25,9 +28,36 @@ def is_md(file_name_with_extension: str) -> bool:
 
 def first_line(file_path: str) -> str:
     with open(file_path, 'r') as f:
-        first_line_in_file = f.readline()
-        return first_line_in_file[2:]
+        return f.readline()
+
+
+def note_title(file_path: str) -> str:
+    return first_line(file_path) \
+        .replace('# ', '') \
+        .replace('\n', '')
 
 
 def create_folder(location: str) -> None:
     pathlib.Path(location).mkdir(parents=True, exist_ok=True)
+
+
+def path(*args: str) -> str:
+    return os.sep.join(args)
+
+
+def run(cmd: List[str]) -> None:
+    """
+    you don't have to quote args that have spaces when you aren't using them
+    in a shell; Python handles this for you.
+
+    examples of using subprocess.run
+        https://www.programcreek.com/python/example/94463/subprocess.run
+    """
+    subprocess.run(
+        args=cmd,
+        env={
+            'PATH': os.environ['PATH']
+        },
+        check=True,
+        text=True
+    )
