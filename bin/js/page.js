@@ -1,5 +1,4 @@
 let pages = [window.location.pathname];
-let switchDirectionWindowWidth = 900;
 let animationLength = 500;
 
 function stackNote(href, level) {
@@ -28,7 +27,6 @@ function unstackNotes(level) {
 
   for (let i = level; i < pages.length; i++) {
     container.removeChild(children[i]);
-    destroyPreviews(children[i]);
   }
   pages = pages.slice(0, level);
 }
@@ -81,67 +79,7 @@ function fetchNote(href, level, animate = false) {
         }.bind(null, element, level),
         10
       );
-
-      updateLinkStatuses();
     });
-}
-
-function updateLinkStatuses() {
-  let links = Array.prototype.slice.call(
-    document.querySelectorAll("a[data-uuid]")
-  );
-
-  links.forEach(function (link) {
-    if (pages.indexOf(link.dataset.uuid) !== -1) {
-      link.classList.add("linked");
-      if (link._tippy) link._tippy.disable();
-    } else {
-      link.classList.remove("linked");
-      if (link._tippy) link._tippy.enable();
-    }
-  });
-}
-
-function destroyPreviews(page) {
-  links = Array.prototype.slice.call(page.querySelectorAll("a[data-uuid]"));
-  links.forEach(function (link) {
-    if (link.hasOwnProperty("_tippy")) {
-      link._tippy.destroy();
-    }
-  });
-}
-
-let tippyOptions = {
-  allowHTML: true,
-  theme: "dark",
-  interactive: true,
-  interactiveBorder: 10,
-  delay: 500,
-  touch: ["hold", 500],
-  maxWidth: "none",
-  inlinePositioning: false,
-  placement: "right",
-};
-
-function createPreview(link, overrideOptions) {
-  level = Number(link.dataset.level);
-
-  iframe = document.createElement('iframe');
-  iframe.width = "400px";
-  iframe.height = "300px";
-  iframe.src = link.href
-
-  tip = tippy(
-    link,
-    Object.assign(
-      {},
-      tippyOptions,
-      {
-        content: iframe
-      },
-      overrideOptions
-    )
-  );
 }
 
 function initializePreviews(page, level) {
@@ -170,9 +108,6 @@ function initializePreviews(page, level) {
         fragment.innerHTML = await response.text();
         let ct = response.headers.get("content-type");
         if (ct.includes("text/html")) {
-          createPreview(element, {
-            placement: window.innerWidth > switchDirectionWindowWidth ? "right" : "top"
-          });
 
           element.addEventListener("click", function (e) {
             if (!e.ctrlKey && !e.metaKey) {
