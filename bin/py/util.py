@@ -1,5 +1,6 @@
 import logging
 import pathlib
+import subprocess
 import sys
 
 
@@ -31,3 +32,33 @@ def first_line(file_path: str) -> str:
 
 def create_folder(location: str) -> None:
     pathlib.Path(location).mkdir(parents=True, exist_ok=True)
+
+
+def convert_to_html(output_filename: str, *args: str) -> None:
+    """
+    call pandoc
+    """
+    print(f'output_filename={output_filename}')
+    print(f'*args={args}')
+    # examples of using subprocess.run
+    # https://www.programcreek.com/python/example/94463/subprocess.run
+    # subprocess.run(
+    #     [
+    #         'pandoc',
+    #         path_of_original_file,
+    #
+    #     ]
+    # )
+    '''
+    pandoc \
+        "$@" \
+        -f markdown \
+        -t html5 \
+        -o "$HTML_FOLDER_REL/$(strip_file_ext "$(basename "$FILE")").html" \
+        --lua-filter="$DIR/links_to_html.lua" \
+        --include-in-header="$DIR/meta/meta.html" \
+        --metadata pagetitle="$(first_line "$FILE")" \
+        --include-before-body="$DIR/meta/meta-before-body.html" \
+        --include-after-body="$DIR/meta/meta-after-body.html"
+    '''
+    pass
