@@ -1,8 +1,11 @@
 import argparse
 import os
+import subprocess
 from argparse import Namespace
 from logging import Logger
 from pathlib import Path
+from subprocess import CompletedProcess
+from typing import Any, Union
 
 import util
 
@@ -10,28 +13,48 @@ import util
 def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
     logger: Logger = util.get_logger(logger_name='pandocify')
 
-    logger.info('notes_folder: %s', notes_folder)
-    logger.info('temp_folder: %s', temp_folder)
-    logger.info('html_folder: %s', html_folder)
+    for folder in [notes_folder, temp_folder, html_folder]:
+        logger.info('creating folder: "%s" if it doesn\'t exist already', folder)
+        util.create_folder(folder)
 
-    # for filename in os.listdir(notes_folder):
-    #     if not util.is_md(filename):
-    #         continue
-    #
-    #     path_to_note: Path = Path(notes_folder + '/' + filename)
-    #     filename_html = str(Path(filename).with_suffix('').with_suffix('html'))
-    #
-    #     note_title = util.first_line(notes_folder + '/' + filename)
-    #     output_filename = f"{html_folder}/{filename.replace('.md', '.html')}"
-    #     util.convert_to_html(
-    #         output_filename,
-    #         notes_folder + '/' + filename,
-    #
-    #     )
+    for file in os.listdir(notes_folder):
+        if not util.is_md(file):
+            continue
 
-    # for each file in the notes folder
-    # convert it (& the corresponding backlinks file) using pandoc
-    # the result must go to the html folder
+        # the path to the note is always gonna be in the notes_folder
+        file_full_path: str = notes_folder + os.sep + file
+        note_title = util.first_line(file_full_path)
+
+        # the output HTML file should have the same name as the note but with
+        # the .html suffix and it should be in the html folder
+        file_html: str = html_folder + os.sep + file
+        file_html: Path = Path(file_html)
+        file_html: Path = file_html.with_suffix('')
+        file_html: Path = file_html.with_suffix('.html')
+        file_html: str = str(file_html)
+
+        # the backlinks file should have the same name as the note but with
+        # the .md.backlinks suffix, and it should be in the temp folder
+        file_backlinks: str = temp_folder + os.sep + file + '.backlinks'
+
+        logger.info('converting %s to html', file)
+        # examples of using subprocess.run
+        # https://www.programcreek.com/python/example/94463/subprocess.run
+        run: Union[CompletedProcess[Any], CompletedProcess[bytes]] = subprocess.run(
+            args=[
+                'pandoc',
+                f'"{file_full_path}"',
+                f'"{file_backlinks}"',
+                '--from=markdown',
+                '--to=html5',
+                f'--output="{file_html}"'
+            ],
+            env={
+                'PATH': os.environ['PATH']
+            },
+            check=True,
+            text=True
+        )
 
 
 if __name__ == '__main__':
