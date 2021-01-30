@@ -41,10 +41,10 @@ generate-index:
 		"$(MARKDOWN_FILES_LOCATION)"
 
 pandoc-conversion:
-	@bin/pandocify.sh \
-		"$(MARKDOWN_FILES_LOCATION)" \
-		"$(TEMP_FOLDER)" \
-		"$(HTML_FOLDER)"
+	@venv/bin/python bin/py/pandocify.py \
+		--notes "$(MARKDOWN_FILES_LOCATION)" \
+		--temp "$(TEMP_FOLDER)" \
+		--html "$(HTML_FOLDER)"
 
 copy-css-and-js:
 	@mkdir -p "$(HTML_FOLDER)/css"

@@ -13,7 +13,7 @@ def link_data(folder_path: str) -> List[Tuple[str, str]]:
         if not util.is_md(file_name_):
             continue
 
-        note_title = util.first_line(folder_path + '/' + file_name_)
+        note_title = util.note_title(folder_path + '/' + file_name_)
         tmp.append((file_name_, note_title))
 
     return tmp

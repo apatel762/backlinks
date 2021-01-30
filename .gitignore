@@ -4,7 +4,7 @@
 *.bl
 *.backlinks
 temp/
-html/
+html*/
 
 # JS files that get downloaded by the installer but don't need to be
 # checked into version control (because they would pollute the git history

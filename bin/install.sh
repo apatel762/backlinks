@@ -29,6 +29,11 @@ require wget "for downloading required files from the internet"
 require sha256sum "for verifying integrity of downloaded files"
 
 # ---------------------------------------------------------------------------
+# STUFF THAT NEEDS TO BE INSTALLED FOR SITE GENERATION AS A WHOLE TO WORK
+
+require pandoc "for converting markdown notes to HTML"
+
+# ---------------------------------------------------------------------------
 # VARIABLES & FUNCTIONS
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

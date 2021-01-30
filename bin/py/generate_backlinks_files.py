@@ -88,7 +88,7 @@ if __name__ == '__main__':
                 for _, link in md_links.findall(contents):
                     if link == file_name:
                         logger.info(f'{file_name}: referenced by {other_file}')
-                        title = util.first_line(f'{notes_folder}/{other_file}')
+                        title = util.note_title(f'{notes_folder}/{other_file}')
                         references.append((other_file, title))
 
         # write out all of the backlinks using some properly styled markdown.
