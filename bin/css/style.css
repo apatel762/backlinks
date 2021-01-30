@@ -99,14 +99,6 @@ body {
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.16), 0px 6px 12px rgba(0, 0, 0, 0.23);
 }
 
-/*
-only the first page should be blurred (i.e. have a lower transparency
-on the background), the rest should be solid
-*/
-/* .page:not(:first-of-type) {
-  background-color: rgba(var(--layer0), 1);
-} */
-
 a {
   background-color: transparent;
 }
