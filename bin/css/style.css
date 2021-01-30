@@ -95,8 +95,7 @@ body {
   flex-direction: column;
   display: flex;
 
-  background-color: rgba(var(--layer0), 0.8);
-  backdrop-filter: blur(5px);
+  background-color: rgba(var(--layer0), 1);
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.16), 0px 6px 12px rgba(0, 0, 0, 0.23);
 }
 
