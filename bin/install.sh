@@ -32,6 +32,7 @@ require sha256sum "for verifying integrity of downloaded files"
 # STUFF THAT NEEDS TO BE INSTALLED FOR SITE GENERATION AS A WHOLE TO WORK
 
 require pandoc "for converting markdown notes to HTML"
+require rsync "for pushing notes to a remote server"
 
 # ---------------------------------------------------------------------------
 # VARIABLES & FUNCTIONS
