@@ -24,8 +24,7 @@ all: \
 	generate-backlinks \
 	generate-index \
 	pandoc-conversion \
-	copy-css-and-js \
-	server
+	copy-css-and-js
 
 clean:
 	rm -rfv "$(TEMP_FOLDER)"
@@ -40,9 +39,10 @@ generate-backlinks:
 		"$(TEMP_FOLDER)"
 
 generate-index:
-	@venv/bin/python bin/py/generate_index_file.py \
-		"$(TEMP_FOLDER)" \
-		"$(MARKDOWN_FILES_LOCATION)"
+	@venv/bin/python bin/py/generate_index_files.py \
+		--temp "$(TEMP_FOLDER)" \
+		--notes "$(MARKDOWN_FILES_LOCATION)" \
+		--json bin/js
 
 pandoc-conversion:
 	@venv/bin/python bin/py/pandocify.py \
@@ -56,6 +56,7 @@ copy-css-and-js:
 	@cp -vu bin/css/*.woff2 "$(HTML_FOLDER)/css"
 	@mkdir -p "$(HTML_FOLDER)/js"
 	@cp -vu bin/js/*.js "$(HTML_FOLDER)/js"
+	@cp -vu bin/js/index.json "$(HTML_FOLDER)/js"
 
 server:
 	python3 -m http.server --directory "$(HTML_FOLDER)"

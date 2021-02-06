@@ -101,8 +101,14 @@ check_venv
 
 # for manipulating URIs
 get_check_and_cache_file_from_CDN \
-    "https://unpkg.com/URIjs@1.16.1/src/URI.js" \
-    "05ddd2f5c3579c0223737e77a5053e18ba7a1a3177e551179de59c8423fbabe8" \
+    "https://unpkg.com/URIjs@1.16.1/src/URI.min.js" \
+    "7f3f593b680938ebaf2d8d553f7e0a18fd8ec5b669baf25b16de738e52b1fe52" \
+    "$DIR/js"
+
+# for client side result indexing (used for search)
+get_check_and_cache_file_from_CDN \
+    "https://unpkg.com/lunr@2.3.9/lunr.min.js" \
+    "0c50d9002b85780a842afffb567bb54ede402dae7c6dc5997a018614d8044fc8" \
     "$DIR/js"
 
 # sane defaults for CSS
