@@ -28,7 +28,6 @@ def backlinks_html(refs: List[Tuple[str, str]]) -> str:
 
     txt: List[str] = [
         '<div class="footer">',
-        '<h3>Links</h3>',
         '<ul>'
     ]
     for backlink, link_display in set(refs):

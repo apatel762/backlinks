@@ -70,11 +70,15 @@ function fetchNote(href, level, animate = false) {
             });
           }
           if (animate) {
-            element.animate([{ opacity: 0 }, { opacity: 1 }], animationLength);
-          }
-
-          if (window.MathJax) {
-            window.MathJax.typeset();
+            element.animate(
+              [
+                {
+                  opacity: 0
+                },
+                {
+                  opacity: 1
+                }
+              ], animationLength);
           }
         }.bind(null, element, level),
         10
@@ -135,7 +139,7 @@ function initializePreviews(page, level) {
                   .filter(o => o !== "")
 
                 if (urlsThatAreOpen.length + 1 < level) {
-                  console.log('something went wrong, we should be scrolling but we are not')
+                  alert('something went wrong, we should be scrolling but we are not')
                   stackNote(element.href, this.dataset.level);
                   fetchNote(element.href, this.dataset.level, (animate = true));
                 }
