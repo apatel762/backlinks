@@ -24,8 +24,7 @@ all: \
 	generate-backlinks \
 	generate-index \
 	pandoc-conversion \
-	copy-css-and-js \
-	server
+	copy-css-and-js
 
 clean:
 	rm -rfv "$(TEMP_FOLDER)"
@@ -36,11 +35,12 @@ install:
 
 generate-backlinks:
 	@venv/bin/python bin/py/generate_backlinks_files.py \
-		"$(MARKDOWN_FILES_LOCATION)" \
-		"$(TEMP_FOLDER)"
+		--temp "$(TEMP_FOLDER)" \
+		--notes "$(MARKDOWN_FILES_LOCATION)" \
+		--json bin/js
 
 generate-index:
-	@venv/bin/python bin/py/generate_index_file.py \
+	@venv/bin/python bin/py/generate_index_files.py \
 		"$(TEMP_FOLDER)" \
 		"$(MARKDOWN_FILES_LOCATION)"
 
