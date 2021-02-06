@@ -171,10 +171,6 @@ body img {
   border: 0;
 }
 
-body pre {
-  overflow: auto;
-}
-
 body code,
 body kbd,
 body pre {
@@ -425,7 +421,8 @@ body code {
   padding-bottom: 0;
   margin: 0;
   font-size: 85%;
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgba(var(--layer0), 1);
+  color: inherit;
   border-radius: 3px;
 }
 
@@ -435,30 +432,11 @@ body code:after {
   content: "\00a0";
 }
 
-body pre > code {
-  padding: 0;
-  margin: 0;
-  font-size: 100%;
-  word-break: normal;
-  white-space: pre;
-  background: transparent;
-  border: 0;
-}
-
 body pre {
   word-wrap: normal;
-}
-
-body pre code {
-  display: inline;
-  max-width: initial;
-  padding: 0;
-  margin: 0;
-  overflow: initial;
-  line-height: inherit;
-  word-wrap: normal;
-  background-color: transparent;
-  border: 0;
+  background-color: rgba(var(--layer0), 1);
+  color: inherit;
+  padding: 1em;
 }
 
 body pre code:before,
@@ -552,10 +530,13 @@ div.header {
 }
 
 div.header span {
-  color: white;
   margin-left: 2rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+div.header span a {
+  color: white;
   font-weight: bold;
   line-height: 1.4;
 }

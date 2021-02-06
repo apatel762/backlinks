@@ -59,8 +59,9 @@ function renderResults(results) {
 }
 
 function searchPosts(query) {
+    const fuzzyQuery = query.split(' ').join('~2');
 	return idx
-        .search(query)
+        .search(fuzzyQuery)
         .map(item => jsonIndex.find((el) => item.ref === el.href));
 }
 

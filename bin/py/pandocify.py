@@ -56,6 +56,7 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             file_full_path, file_backlinks,
             '--from=markdown',
             '--to=html5',
+            '--no-highlight',
             f'--output={file_html}',
             f'--lua-filter={get_lua_filter()}',
             f'--include-in-header={get_meta_html()}',
