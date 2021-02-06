@@ -9,7 +9,8 @@ html*/
 # JS files that get downloaded by the installer but don't need to be
 # checked into version control (because they would pollute the git history
 # every time you update them)
-bin/js/URI.js
+bin/js/URI.min.js
+bin/js/lunr.min.js
 bin/js/index.json
 bin/css/light.css
 bin/css/evergreen.css
