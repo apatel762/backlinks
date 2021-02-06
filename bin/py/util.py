@@ -37,6 +37,13 @@ def note_title(file_path: str) -> str:
         .replace('\n', '')
 
 
+def change_file_extension(file_path: str, new_ext: str) -> str:
+    fp: pathlib.Path = pathlib.Path(file_path)
+    fp: pathlib.Path = fp.with_suffix('')
+    fp: pathlib.Path = fp.with_suffix(new_ext)
+    return str(fp)
+
+
 def create_folder(location: str) -> None:
     pathlib.Path(location).mkdir(parents=True, exist_ok=True)
 

@@ -3,6 +3,7 @@ import os
 from logging import Logger
 from typing import List, Tuple
 import sys
+import json
 
 import util
 
@@ -20,19 +21,30 @@ def link_data(folder_path: str) -> List[Tuple[str, str]]:
 
 
 def create_json_index(note_data: List[Tuple[str, str]], destination_dir: str):
-    # create JSON object with all of the note data
-    # write it to a file called index.json in the destination_dir
-    pass
+    # https://lunrjs.com/guides/index_prebuilding.html
+    # the dictionary/json should be formatted as in that link so that it will
+    # work as an index
+    with open(util.path(destination_dir, 'index.json'), 'w') as json_file:
+        json.dump(
+            [
+                {
+                    'href': util.change_file_extension(file_name, '.html'),
+                    'title': title
+                }
+                for file_name, title in note_data
+            ],
+            json_file)
 
 
 def create_index_files(temp_folder: str, notes_folder: str, json_index_folder: str):
     logger: Logger = util.get_logger(logger_name='generate_index_file')
-    logger.info(f'creating index.md in {temp_folder}')
 
     data = link_data(folder_path=notes_folder)
 
+    logger.info(f'creating index.json in {json_index_folder}')
     create_json_index(note_data=data, destination_dir=json_index_folder)
 
+    logger.info(f'creating index.md in {temp_folder}')
     for file_name, title in sorted(data, reverse=True):
         if file_name == 'index.md':
             logger.info('aborting! you already have an index.md')

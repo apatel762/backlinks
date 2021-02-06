@@ -1,9 +1,7 @@
 import argparse
 import os
-import subprocess
 from argparse import Namespace
 from logging import Logger
-from pathlib import Path
 
 import util
 
@@ -40,20 +38,17 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             continue
 
         # the path to the note is always gonna be in the notes_folder
-        file_full_path: str = notes_folder + os.sep + file
+        file_full_path: str = util.path(notes_folder, file)
         note_title = util.note_title(file_full_path)
 
         # the output HTML file should have the same name as the note but with
         # the .html suffix and it should be in the html folder
-        file_html: str = html_folder + os.sep + file
-        file_html: Path = Path(file_html)
-        file_html: Path = file_html.with_suffix('')
-        file_html: Path = file_html.with_suffix('.html')
-        file_html: str = str(file_html)
+        file_html: str = util.path(html_folder, file)
+        file_html: str = util.change_file_extension(file_html, '.html')
 
         # the backlinks file should have the same name as the note but with
         # the .md.backlinks suffix, and it should be in the temp folder
-        file_backlinks: str = temp_folder + os.sep + file + '.backlinks'
+        file_backlinks: str = util.path(temp_folder, file + '.backlinks')
 
         logger.info('converting %s to html (title=%s)', file, note_title)
         util.run(cmd=[

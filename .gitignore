@@ -10,9 +10,7 @@ html*/
 # checked into version control (because they would pollute the git history
 # every time you update them)
 bin/js/URI.js
-bin/js/vis-network.min.js
-bin/js/popper.min.js
-bin/js/tippy-bundle.umd.min.js
+bin/js/index.json
 bin/css/light.css
 bin/css/evergreen.css
 bin/css/*.woff2
