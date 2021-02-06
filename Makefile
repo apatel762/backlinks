@@ -12,6 +12,10 @@ TEMP_FOLDER=temp
 # relative path of the folder where the html files will go
 HTML_FOLDER=html
 
+# a location on a server that you want to push the HTML files to
+# if you host the website on a server that you manage
+REMOTE_FILE_PATH=amigo@192.168.0.26:/var/broadwater/notes/raw/
+
 # ----------------------------------------------------------------------
 
 all: \
@@ -55,3 +59,6 @@ copy-css-and-js:
 
 server:
 	python3 -m http.server --directory "$(HTML_FOLDER)"
+
+push:
+	rsync --archive --verbose --compress $(HTML_FOLDER)/* $(REMOTE_FILE_PATH)
