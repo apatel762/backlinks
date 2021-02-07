@@ -57,6 +57,7 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             '--from=markdown',
             '--to=html5',
             '--no-highlight',
+            f'--id-prefix={util.to_footnote_id(file)}',
             f'--output={file_html}',
             f'--lua-filter={get_lua_filter()}',
             f'--include-in-header={get_meta_html()}',

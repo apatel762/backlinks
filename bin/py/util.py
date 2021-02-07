@@ -3,7 +3,9 @@ import os
 import pathlib
 import subprocess
 import sys
+import string
 from typing import List
+import unicodedata
 
 
 def get_logger(logger_name: str) -> logging.Logger:
@@ -42,6 +44,35 @@ def change_file_extension(file_path: str, new_ext: str) -> str:
     fp: pathlib.Path = fp.with_suffix('')
     fp: pathlib.Path = fp.with_suffix(new_ext)
     return str(fp)
+
+
+def strip_file_extension(file_path: str) -> str:
+    fp: pathlib.Path = pathlib.Path(file_path)
+    fp: pathlib.Path = fp.with_suffix('')
+    return str(fp)
+
+
+def clean_filename(filename, chars_to_replace: str = ' ', replacement: str = '_'):
+    whitelist =f'-_.() {string.ascii_letters}{string.digits}'
+    file_name_max_size = 255
+
+    # change the chars_to_replace into underscores
+    for c in chars_to_replace:
+        filename = filename.replace(c, replacement)
+
+    # keep only valid ascii chars
+    cleaned_filename = unicodedata.normalize('NFKD', filename).encode('ASCII', 'ignore').decode()
+
+    # keep only whitelisted chars
+    cleaned_filename = ''.join(c for c in cleaned_filename if c in whitelist)
+
+    return cleaned_filename[:file_name_max_size]
+
+
+def to_footnote_id(file_name) -> str:
+    f: str = strip_file_extension(file_name)
+
+    return clean_filename(f, chars_to_replace=' -').replace('_', '')
 
 
 def create_folder(location: str) -> None:
