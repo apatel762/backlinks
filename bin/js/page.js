@@ -1,3 +1,48 @@
+/**
+ * Execute a callback when the document has finished loading
+ * @param {Function} fn the callback to execute
+ */
+function whenDocumentIsReady(fn) {
+  if (document.readyState != "loading") {
+    fn();
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+}
+
+function logCoords(el) {
+  console.log('(' + el.getBoundingClientRect().left + ', ' + el.getBoundingClientRect().top + ')' )
+}
+
+function createEmptyDiv() {
+  var d = document.createElement('div');
+  d.style.height = '0px';
+  d.style.opacity = '0';
+  return d;
+}
+
+/**
+ * Hack: create an empty div before the supplied element and scroll to it
+ * using the built-in `scrollIntoView()`. We might not be able to scroll
+ * directly to the element if it's using `position: sticky;`
+ * @param {Element} el an element on the page that you want to scroll to
+ */
+function forceScrollIntoView(el) {
+  logCoords(el);
+  var tempDiv = el.parentNode.insertBefore(createEmptyDiv(), el);
+
+  // https://web.archive.org/web/20210207095102/https://stackoverflow.com/questions/48634459/scrollintoview-block-vs-inline/48635751
+  // https://stackoverflow.com/a/48635751
+  // ^ an explanation of the scroll options
+  tempDiv.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+    inline: "center"
+  });
+
+  tempDiv.remove();
+}
+
 let pages = [window.location.pathname];
 let animationLength = 500;
 
@@ -47,7 +92,7 @@ function fetchNote(href, level, animate = false) {
       fragment.innerHTML = text;
 
       let element = fragment.content.querySelector(".page");
-      element.setAttribute('z-index', level);
+      element.setAttribute("z-index", level);
       //https://stackoverflow.com/questions/2214387/setting-top-and-left-css-attributes
       element.style.left = 40 * level + "px";
       element.style.right = -585 + "px";
@@ -63,22 +108,20 @@ function fetchNote(href, level, animate = false) {
           // level 2 will be really wide to cover up the blur so if we scroll
           // into view it'll take up the whole screen
           if (level + 1 !== 2) {
-            element.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-              inline: 'center'
-            });
+            forceScrollIntoView(element);
           }
           if (animate) {
             element.animate(
               [
                 {
-                  opacity: 0
+                  opacity: 0,
                 },
                 {
-                  opacity: 1
-                }
-              ], animationLength);
+                  opacity: 1,
+                },
+              ],
+              animationLength
+            );
           }
         }.bind(null, element, level),
         10
@@ -110,14 +153,12 @@ function initializePreviews(page, level) {
         let response = await fetch(prefetchLink);
         let fragment = document.createElement("template");
         fragment.innerHTML = await response.text();
-        let ct = response.headers.get("content-type");
-        if (ct.includes("text/html")) {
-
+        if (response.headers.get("content-type").includes("text/html")) {
           element.addEventListener("click", function (e) {
             if (!e.ctrlKey && !e.metaKey) {
               // do substring on target URL to remove the leading '/'
-              const currentUrl = e.view.window.location.href
-              const targetUrl = new URL(element.href).pathname.substring(1)
+              const currentUrl = e.view.window.location.href;
+              const targetUrl = new URL(element.href).pathname.substring(1);
 
               // no matter what happens, we don't want the default behaviour
               // of opening the page normally; we will handle it
@@ -128,62 +169,59 @@ function initializePreviews(page, level) {
                 // and scroll to it, but only if we've got one stacked page
                 // open already. If we've only got the starting window open
                 // then we can safely skip all of this (hence the level >= 2)
-                const url = new URL(document.URL)
+                const url = new URL(document.URL);
                 // split().join() is a hacky way of doing .replaceAll()
                 // which doesn't work for some reason
                 const urlsThatAreOpen = url.href
-                  .split(url.origin + '/').join('')
-                  .split('?').join('')
-                  .split('&').join('')
-                  .split('stackedNotes=%2F')
-                  .filter(o => o !== "")
+                  // strip everything leading up to the path & query
+                  .split(url.origin + "/").join("")
+                  // strip every '?' and '&'
+                  .split("?").join("")
+                  .split("&").join("")
+                  // strip any footnote ref that might be at the end
+                  .split(/#.*fnref[0-9]+/).join("")
+                  // and finally, get all of the pages left
+                  .split("stackedNotes=%2F")
+                  .filter((o) => o !== "");
 
                 if (urlsThatAreOpen.length + 1 < level) {
-                  alert('something went wrong, we should be scrolling but we are not')
+                  alert(
+                    "something went wrong, we should be scrolling but we are not"
+                  );
                   stackNote(element.href, this.dataset.level);
                   fetchNote(element.href, this.dataset.level, (animate = true));
-                }
-                else {
+                } else {
                   // need index, so can't use .forEach loop
+                  // TODO: can't we use map for this? https://stackoverflow.com/a/34347308
                   for (let i = 0; i < urlsThatAreOpen.length; i++) {
-                    const openUrl = urlsThatAreOpen[i]
+                    const openUrl = urlsThatAreOpen[i];
                     if (targetUrl === openUrl) {
                       // the URL we want to go to is already open, so scroll to it
                       // index +1 because the first page isn't a stacked page
                       // index +1 because stacked page indices start at one
-                      document
-                        .querySelector('[data-level = "' + (i + 2) + '"]')
-                        .scrollIntoView({
-                          behavior: 'smooth',
-                          block: 'center',
-                          inline: 'center'
-                        })
+                      forceScrollIntoView(
+                        document.querySelector('[data-level = "' + (i + 2) + '"]'));
                     }
                   }
                 }
-              }
-              else {
+              } else {
                 stackNote(element.href, this.dataset.level);
                 fetchNote(element.href, this.dataset.level, (animate = true));
               }
             }
           });
-        };
+        }
       }
       return myFetch();
     }
   });
 }
 
-window.addEventListener("popstate", function (event) {
-  // TODO: check state and pop pages if possible, rather than reloading.
-  window.location = window.location; // this reloads the page.
-});
-
-window.onload = function () {
+whenDocumentIsReady(function () {
   initializePreviews(document.querySelector(".page"));
 
   uri = URI(window.location);
+
   if (uri.hasQuery("stackedNotes")) {
     stacks = uri.query(true).stackedNotes;
     if (!Array.isArray(stacks)) {
@@ -193,4 +231,4 @@ window.onload = function () {
       fetchNote(stacks[i - 1], i);
     }
   }
-};
+});
