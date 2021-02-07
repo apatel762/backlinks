@@ -512,9 +512,14 @@ section.footnotes {
   font-size: 0.8em;
 }
 
+section.footnotes ol li:not(:last-child) {
+  padding-bottom: 0.3em;
+}
+
 section.footnotes ol li p {
   margin: 0;
   padding: 0;
+  padding-bottom: 0.4em;
 }
 
 section.footnotes hr {
