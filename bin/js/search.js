@@ -8,7 +8,7 @@ var idx,
  * @param {Function} fn the callback to execute
  */
 function whenDocumentIsReady(fn) {
-    if (document.readyState != 'loading'){
+    if (document.readyState != 'loading') {
         fn();
     } else {
         document.addEventListener('DOMContentLoaded', fn);
@@ -20,8 +20,7 @@ function whenDocumentIsReady(fn) {
  * @param {Element} listElement An ordered list or unordered list element
  */
 function empty(listElement) {
-    while(listElement.firstChild)
-    {
+    while (listElement.firstChild) {
         listElement.removeChild(listElement.firstChild);
     }
 }
@@ -60,7 +59,7 @@ function renderResults(results) {
 
 function searchPosts(query) {
     const fuzzyQuery = query.split(' ').join('~2');
-	return idx
+    return idx
         .search(fuzzyQuery)
         .map(item => jsonIndex.find((el) => item.ref === el.href));
 }
@@ -72,14 +71,14 @@ function handleSearchBoxKeyPress(keyUpEvent) {
     // trigger search when at least two chars provided.
     var query = searchBox.value;
     if (query.length < 2) {
-      return;
+        return;
     }
 
     renderResults(searchPosts(query));
 }
 
 function populateLunrIndex(json) {
-    return lunr(function(){
+    return lunr(function () {
         // tell lunr to expect an 'href' and 'title' in each of the elements
         // in the JSON
         this.ref('href')
@@ -91,7 +90,7 @@ function populateLunrIndex(json) {
         jsonIndex = json;
 
         // load the JSON elements into lunr one-by-one
-        json.forEach(function(element) {
+        json.forEach(function (element) {
             try {
                 this.add(element)
             } catch (e) {
@@ -110,7 +109,7 @@ function prepIndex(jsonFilePath) {
 
 prepIndex('/js/index.json');
 
-whenDocumentIsReady(function() {
+whenDocumentIsReady(function () {
     // cache these two elements
     resultsList = getResultsListElement();
     searchBox = getSearchBox();
