@@ -30,7 +30,7 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
     logger: Logger = util.get_logger(logger_name='pandocify')
 
     for folder in [notes_folder, temp_folder, html_folder]:
-        logger.info('creating folder: "%s" if it doesn\'t exist already', folder)
+        logger.info('creating folder: \'%s\' if it doesn\'t exist already', folder)
         util.create_folder(folder)
 
     for file in os.listdir(notes_folder):
@@ -65,6 +65,30 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             f'--include-before-body={get_before_body_html()}',
             f'--include-after-body={get_after_body_html()}'
         ])
+
+    # if the index.md was generated in the temp folder, pandocify it
+    index_file_name = 'index.md'
+    generated_index_file = util.path(temp_folder, index_file_name)
+    if os.path.isfile(generated_index_file):
+        output_file = util.path(
+            html_folder, util.change_file_extension(index_file_name, '.html'))
+        index_title = util.note_title(generated_index_file)
+        logger.info('converting %s to html (title=%s)', generated_index_file, index_title)
+        util.run(cmd=[
+            'pandoc',
+            generated_index_file,
+            '--from=markdown',
+            '--to=html5',
+            '--no-highlight',
+            f'--id-prefix={util.to_footnote_id(index_file_name)}',
+            f'--output={output_file}',
+            f'--lua-filter={get_lua_filter()}',
+            f'--include-in-header={get_meta_html()}',
+            f'--metadata=pagetitle:{index_title}',
+            f'--include-before-body={get_before_body_html()}',
+            f'--include-after-body={get_after_body_html()}'
+        ])
+
 
 
 if __name__ == '__main__':
