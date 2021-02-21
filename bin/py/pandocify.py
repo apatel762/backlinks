@@ -6,24 +6,38 @@ from logging import Logger
 import util
 
 
+def validate_file_exists(path: str, error_on_validation_failure: bool = True) -> bool:
+    if os.path.isfile(path):
+        return True
+    else:
+        if error_on_validation_failure:
+            raise FileNotFoundError(f'could not find \'{path}\'')
+        else:
+            return False
+
+
 def get_lua_filter() -> str:
-    """
-    TODO: make this a bit more robust... what if the file doesn't exist
-     same for all of the other similar functions below
-    """
-    return util.path('bin', 'links_to_html.lua')
+    path: str = util.path('bin', 'links_to_html.lua')
+    validate_file_exists(path)
+    return path
 
 
 def get_meta_html() -> str:
-    return util.path('bin', 'meta', 'meta.html')
+    path: str = util.path('bin', 'meta', 'meta.html')
+    validate_file_exists(path)
+    return path
 
 
 def get_before_body_html() -> str:
-    return util.path('bin', 'meta', 'meta-before-body.html')
+    path: str = util.path('bin', 'meta', 'meta-before-body.html')
+    validate_file_exists(path)
+    return path
 
 
 def get_after_body_html() -> str:
-    return util.path('bin', 'meta', 'meta-after-body.html')
+    path: str = util.path('bin', 'meta', 'meta-after-body.html')
+    validate_file_exists(path)
+    return path
 
 
 def get_note_summary(note_path: str, length: int = 300) -> str:
@@ -94,7 +108,7 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
     # if the index.md was generated in the temp folder, pandocify it
     index_file_name = 'index.md'
     generated_index_file = util.path(temp_folder, index_file_name)
-    if os.path.isfile(generated_index_file):
+    if validate_file_exists(generated_index_file, error_on_validation_failure=False):
         output_file = util.path(
             html_folder, util.change_file_extension(index_file_name, '.html'))
         index_title = util.note_title(generated_index_file)
