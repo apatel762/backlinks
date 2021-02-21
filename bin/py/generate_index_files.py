@@ -22,8 +22,8 @@ def link_data(folder_path: str) -> List[Tuple[str, str]]:
 
 def create_json_index(note_data: List[Tuple[str, str]], destination_dir: str):
     # https://lunrjs.com/guides/index_prebuilding.html
-    # the dictionary/json should be formatted as in that link so that it will
-    # work as an index
+    # the dictionary/json should be formatted as in the above link so that it
+    # will work as a lunr index
     with open(util.path(destination_dir, 'index.json'), 'w') as json_file:
         json.dump(
             [
