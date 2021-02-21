@@ -48,7 +48,7 @@ def create_index_files(temp_folder: str, notes_folder: str, json_index_folder: s
     logger.info(f'creating index.md in {temp_folder}')
     for file_name, title in sorted(data, reverse=True):
         if file_name == 'index.md':
-            logger.info('aborting! you already have an index.md')
+            logger.warning('aborting, you have a custom index.md in your notes')
             sys.exit(0)
 
     with open(f'{temp_folder}/index.md', 'w') as f:

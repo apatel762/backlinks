@@ -50,7 +50,7 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
         # the .md.backlinks suffix, and it should be in the temp folder
         file_backlinks: str = util.path(temp_folder, file + '.backlinks')
 
-        logger.info('converting %s to html (title=%s)', file, note_title)
+        logger.debug('converting %s to html, title=%s', file, note_title)
         util.run(cmd=[
             'pandoc',
             file_full_path, file_backlinks,
@@ -73,7 +73,7 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
         output_file = util.path(
             html_folder, util.change_file_extension(index_file_name, '.html'))
         index_title = util.note_title(generated_index_file)
-        logger.info('converting %s to html (title=%s)', generated_index_file, index_title)
+        logger.debug('converting %s to html, title=%s', generated_index_file, index_title)
         util.run(cmd=[
             'pandoc',
             generated_index_file,
@@ -88,7 +88,6 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             f'--include-before-body={get_before_body_html()}',
             f'--include-after-body={get_after_body_html()}'
         ])
-
 
 
 if __name__ == '__main__':
