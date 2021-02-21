@@ -7,6 +7,7 @@ import sys
 import json
 
 import util
+import pandocify
 
 
 def link_data(folder_path: str) -> List[Tuple[str, str]]:
@@ -37,10 +38,6 @@ def create_json_index(note_data: List[Tuple[str, str]], destination_dir: str):
                 for file_name, title in note_data
             ],
             json_file)
-
-
-def get_note_summary(note_path: str) -> str:
-    pass
 
 
 def create_index_files(temp_folder: str, notes_folder: str, json_index_folder: str):
@@ -76,7 +73,11 @@ def create_index_files(temp_folder: str, notes_folder: str, json_index_folder: s
             try:
                 file_name, title = data.popleft()
                 link = util.change_file_extension(file_name, '.html')
-                f.write(f'- [{title}]({link})')
+                f.write(f'### [{title}]({link})')
+                f.write('\n')
+                f.write('\n')
+                f.write(pandocify.get_note_summary(util.path(notes_folder, file_name)))
+                f.write('\n')
                 f.write('\n')
             except IndexError:
                 # if we got here then there are less than five notes in the

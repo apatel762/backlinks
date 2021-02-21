@@ -26,6 +26,31 @@ def get_after_body_html() -> str:
     return util.path('bin', 'meta', 'meta-after-body.html')
 
 
+def get_note_summary(note_path: str, length: int = 300) -> str:
+    output = util.do_run(cmd=[
+        'pandoc',
+        note_path,
+        '--from=markdown',
+        '--to=plain'
+    ])
+
+    # we want to strip the title from the returned text
+    # the text will always have two '\n' chars at the front, so beg=4
+    # then add 6 to the resulting index (to skip the next three '\n' chars)
+    # to get the index of where the text actually starts.
+    text_start_index = output.stdout.find('\n', 4) + len('\n' * 3)
+    text_without_title = output.stdout[text_start_index::]
+    first_n_chars = text_without_title[:length]
+
+    summary: str
+    if first_n_chars.endswith('\\'):
+        summary = first_n_chars[:length - 1]
+    else:
+        summary = first_n_chars
+
+    return summary + '...'
+
+
 def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
     logger: Logger = util.get_logger(logger_name='pandocify')
 
@@ -51,7 +76,7 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
         file_backlinks: str = util.path(temp_folder, file + '.backlinks')
 
         logger.debug('converting %s to html, title=%s', file, note_title)
-        util.run(cmd=[
+        util.do_run(cmd=[
             'pandoc',
             file_full_path, file_backlinks,
             '--from=markdown',
@@ -74,7 +99,7 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             html_folder, util.change_file_extension(index_file_name, '.html'))
         index_title = util.note_title(generated_index_file)
         logger.debug('converting %s to html, title=%s', generated_index_file, index_title)
-        util.run(cmd=[
+        util.do_run(cmd=[
             'pandoc',
             generated_index_file,
             '--from=markdown',
