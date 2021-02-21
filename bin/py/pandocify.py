@@ -6,31 +6,70 @@ from logging import Logger
 import util
 
 
+def validate_file_exists(path: str, error_on_validation_failure: bool = True) -> bool:
+    if os.path.isfile(path):
+        return True
+    else:
+        if error_on_validation_failure:
+            raise FileNotFoundError(f'could not find \'{path}\'')
+        else:
+            return False
+
+
 def get_lua_filter() -> str:
-    """
-    TODO: make this a bit more robust... what if the file doesn't exist
-     same for all of the other similar functions below
-    """
-    return util.path('bin', 'links_to_html.lua')
+    path: str = util.path('bin', 'links_to_html.lua')
+    validate_file_exists(path)
+    return path
 
 
 def get_meta_html() -> str:
-    return util.path('bin', 'meta', 'meta.html')
+    path: str = util.path('bin', 'meta', 'meta.html')
+    validate_file_exists(path)
+    return path
 
 
 def get_before_body_html() -> str:
-    return util.path('bin', 'meta', 'meta-before-body.html')
+    path: str = util.path('bin', 'meta', 'meta-before-body.html')
+    validate_file_exists(path)
+    return path
 
 
 def get_after_body_html() -> str:
-    return util.path('bin', 'meta', 'meta-after-body.html')
+    path: str = util.path('bin', 'meta', 'meta-after-body.html')
+    validate_file_exists(path)
+    return path
+
+
+def get_note_summary(note_path: str, length: int = 300) -> str:
+    output = util.do_run(cmd=[
+        'pandoc',
+        note_path,
+        '--from=markdown',
+        '--to=plain'
+    ])
+
+    # we want to strip the title from the returned text
+    # the text will always have two '\n' chars at the front, so beg=4
+    # then add 6 to the resulting index (to skip the next three '\n' chars)
+    # to get the index of where the text actually starts.
+    text_start_index = output.stdout.find('\n', 4) + len('\n' * 3)
+    text_without_title = output.stdout[text_start_index::]
+    first_n_chars = text_without_title[:length]
+
+    summary: str
+    if first_n_chars.endswith('\\'):
+        summary = first_n_chars[:length - 1]
+    else:
+        summary = first_n_chars
+
+    return summary + '...'
 
 
 def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
     logger: Logger = util.get_logger(logger_name='pandocify')
 
     for folder in [notes_folder, temp_folder, html_folder]:
-        logger.info('creating folder: "%s" if it doesn\'t exist already', folder)
+        logger.info('creating folder: \'%s\' if it doesn\'t exist already', folder)
         util.create_folder(folder)
 
     for file in os.listdir(notes_folder):
@@ -50,8 +89,8 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
         # the .md.backlinks suffix, and it should be in the temp folder
         file_backlinks: str = util.path(temp_folder, file + '.backlinks')
 
-        logger.info('converting %s to html (title=%s)', file, note_title)
-        util.run(cmd=[
+        logger.debug('converting %s to html, title=%s', file, note_title)
+        util.do_run(cmd=[
             'pandoc',
             file_full_path, file_backlinks,
             '--from=markdown',
@@ -62,6 +101,29 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             f'--lua-filter={get_lua_filter()}',
             f'--include-in-header={get_meta_html()}',
             f'--metadata=pagetitle:{note_title}',
+            f'--include-before-body={get_before_body_html()}',
+            f'--include-after-body={get_after_body_html()}'
+        ])
+
+    # if the index.md was generated in the temp folder, pandocify it
+    index_file_name = 'index.md'
+    generated_index_file = util.path(temp_folder, index_file_name)
+    if validate_file_exists(generated_index_file, error_on_validation_failure=False):
+        output_file = util.path(
+            html_folder, util.change_file_extension(index_file_name, '.html'))
+        index_title = util.note_title(generated_index_file)
+        logger.debug('converting %s to html, title=%s', generated_index_file, index_title)
+        util.do_run(cmd=[
+            'pandoc',
+            generated_index_file,
+            '--from=markdown',
+            '--to=html5',
+            '--no-highlight',
+            f'--id-prefix={util.to_footnote_id(index_file_name)}',
+            f'--output={output_file}',
+            f'--lua-filter={get_lua_filter()}',
+            f'--include-in-header={get_meta_html()}',
+            f'--metadata=pagetitle:{index_title}',
             f'--include-before-body={get_before_body_html()}',
             f'--include-after-body={get_after_body_html()}'
         ])

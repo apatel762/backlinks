@@ -90,7 +90,7 @@ if __name__ == '__main__':
                 # where the link in markdown would've been [Page B](pageB.md)
                 for _, link in md_links.findall(contents):
                     if link == file_name:
-                        logger.info(f'{file_name}: referenced by {other_file}')
+                        logger.debug(f'{file_name}: referenced by {other_file}')
                         title = util.note_title(f'{notes_folder}/{other_file}')
                         references.append((other_file, title))
 

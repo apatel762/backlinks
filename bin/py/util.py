@@ -1,11 +1,11 @@
 import logging
 import os
 import pathlib
-import subprocess
-import sys
 import string
-from typing import List
+import sys
 import unicodedata
+from typing import List, Union
+from subprocess import CompletedProcess, run
 
 
 def get_logger(logger_name: str) -> logging.Logger:
@@ -53,7 +53,7 @@ def strip_file_extension(file_path: str) -> str:
 
 
 def clean_filename(filename, chars_to_replace: str = ' ', replacement: str = '_'):
-    whitelist =f'-_.() {string.ascii_letters}{string.digits}'
+    whitelist = f'-_.() {string.ascii_letters}{string.digits}'
     file_name_max_size = 255
 
     # change the chars_to_replace into underscores
@@ -61,7 +61,8 @@ def clean_filename(filename, chars_to_replace: str = ' ', replacement: str = '_'
         filename = filename.replace(c, replacement)
 
     # keep only valid ascii chars
-    cleaned_filename = unicodedata.normalize('NFKD', filename).encode('ASCII', 'ignore').decode()
+    cleaned_filename = unicodedata.normalize('NFKD', filename).encode('ASCII',
+                                                                      'ignore').decode()
 
     # keep only whitelisted chars
     cleaned_filename = ''.join(c for c in cleaned_filename if c in whitelist)
@@ -83,7 +84,7 @@ def path(*args: str) -> str:
     return os.sep.join(args)
 
 
-def run(cmd: List[str]) -> None:
+def do_run(cmd: List[str]) -> CompletedProcess:
     """
     you don't have to quote args that have spaces when you aren't using them
     in a shell; Python handles this for you.
@@ -91,11 +92,12 @@ def run(cmd: List[str]) -> None:
     examples of using subprocess.run
         https://www.programcreek.com/python/example/94463/subprocess.run
     """
-    subprocess.run(
+    return run(
         args=cmd,
         env={
             'PATH': os.environ['PATH']
         },
         check=True,
+        capture_output=True,
         text=True
     )

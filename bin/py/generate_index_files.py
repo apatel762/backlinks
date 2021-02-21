@@ -1,4 +1,5 @@
 import argparse
+import collections
 import os
 from logging import Logger
 from typing import List, Tuple
@@ -6,6 +7,7 @@ import sys
 import json
 
 import util
+import pandocify
 
 
 def link_data(folder_path: str) -> List[Tuple[str, str]]:
@@ -14,16 +16,18 @@ def link_data(folder_path: str) -> List[Tuple[str, str]]:
         if not util.is_md(file_name_):
             continue
 
-        note_title = util.note_title(folder_path + '/' + file_name_)
+        note_title = util.note_title(util.path(folder_path, file_name_))
         tmp.append((file_name_, note_title))
 
+    tmp.sort(key=lambda pair: os.path.getmtime(util.path(folder_path, pair[0])),
+             reverse=True)
     return tmp
 
 
 def create_json_index(note_data: List[Tuple[str, str]], destination_dir: str):
     # https://lunrjs.com/guides/index_prebuilding.html
-    # the dictionary/json should be formatted as in that link so that it will
-    # work as an index
+    # the dictionary/json should be formatted as in the above link so that it
+    # will work as a lunr index
     with open(util.path(destination_dir, 'index.json'), 'w') as json_file:
         json.dump(
             [
@@ -45,20 +49,52 @@ def create_index_files(temp_folder: str, notes_folder: str, json_index_folder: s
     create_json_index(note_data=data, destination_dir=json_index_folder)
 
     logger.info(f'creating index.md in {temp_folder}')
-    for file_name, title in sorted(data, reverse=True):
+    for file_name, title in data:
         if file_name == 'index.md':
-            logger.info('aborting! you already have an index.md')
+            logger.warning('aborting, you have a custom index.md in your notes')
             sys.exit(0)
 
     with open(f'{temp_folder}/index.md', 'w') as f:
         f.write('# Index')
         f.write('\n')
+        f.write('\n')
         f.write(f'You have {len(data)} permanotes in your collection.')
         f.write('\n')
         f.write('\n')
-        for file_name, title in sorted(data, reverse=True):
-            link = file_name.replace('.md', '.html')
-            f.write(f'- [{title}]({link})\n')
+
+        data = collections.deque(data)
+
+        # for the first five notes, extract a little summary to write
+        # underneath them; generate the summary from pandoc
+        f.write('## Recently modified')
+        f.write('\n')
+        f.write('\n')
+        for i in range(5):
+            try:
+                file_name, title = data.popleft()
+                link = util.change_file_extension(file_name, '.html')
+                f.write(f'### [{title}]({link})')
+                f.write('\n')
+                f.write('\n')
+                f.write(pandocify.get_note_summary(util.path(notes_folder, file_name)))
+                f.write('\n')
+                f.write('\n')
+            except IndexError:
+                # if we got here then there are less than five notes in the
+                # data, so just end the index file creation here, no need
+                # to do the next bit
+                return
+        f.write('\n')
+        f.write('\n')
+
+        # for the rest of them, just write them as a list
+        f.write('## Other notes')
+        f.write('\n')
+        f.write('\n')
+        for file_name, title in data:
+            link = util.change_file_extension(file_name, '.html')
+            f.write(f'- [{title}]({link})')
+            f.write('\n')
 
 
 if __name__ == '__main__':
