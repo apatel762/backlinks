@@ -91,12 +91,6 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
 
 
 if __name__ == '__main__':
-    """
-    arg parse:
-      path to markdown notes
-      relative path to folder where backlinks files will go
-      relative path to folder where HTML files will go
-    """
     parser = argparse.ArgumentParser(description='Convert markdown notes to HTML')
     parser.add_argument(
         '-n', '--notes',
