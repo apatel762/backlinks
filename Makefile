@@ -39,10 +39,9 @@ generate-backlinks:
 		"$(TEMP_FOLDER)"
 
 generate-index:
-	@venv/bin/python bin/py/generate_index_files.py \
+	@venv/bin/python bin/py/generate_index_file.py \
 		--temp "$(TEMP_FOLDER)" \
-		--notes "$(MARKDOWN_FILES_LOCATION)" \
-		--json bin/js
+		--notes "$(MARKDOWN_FILES_LOCATION)"
 
 pandoc-conversion:
 	@venv/bin/python bin/py/pandocify.py \
@@ -52,14 +51,14 @@ pandoc-conversion:
 
 copy-css-and-js:
 	@mkdir -p "$(HTML_FOLDER)/css"
-	@cp -vu bin/css/*.css "$(HTML_FOLDER)/css"
-	@cp -vu bin/css/*.woff2 "$(HTML_FOLDER)/css"
+	@rsync -avzh --ignore-missing-args bin/css/*.css "$(HTML_FOLDER)/css"
+	@rsync -avzh --ignore-missing-args bin/css/*.woff2 "$(HTML_FOLDER)/css"
 	@mkdir -p "$(HTML_FOLDER)/js"
-	@cp -vu bin/js/*.js "$(HTML_FOLDER)/js"
-	@cp -vu bin/js/index.json "$(HTML_FOLDER)/js"
+	@rsync -avzh --ignore-missing-args bin/js/*.js "$(HTML_FOLDER)/js"
+	@rsync -avzh --ignore-missing-args bin/js/index.json "$(HTML_FOLDER)/js"
 
 server:
 	python3 -m http.server --directory "$(HTML_FOLDER)"
 
 push:
-	rsync --archive --verbose --compress $(HTML_FOLDER)/* $(REMOTE_FILE_PATH)
+	rsync -avzh $(HTML_FOLDER)/* $(REMOTE_FILE_PATH)
