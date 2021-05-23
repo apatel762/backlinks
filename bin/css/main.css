@@ -27,14 +27,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --base-bg: black;
-    --base-label: white;
+    --base-bg: #151515;
+    --base-label: #d2d2d2;
     --base-label-secondary: #8d8d8d;
     --base-label-tertiary: #474747;
     --base-label-quaternary: #2a2a2a;
 
     --elevated-bg: #1c1c1c;
-    --elevated-label: white;
+    --elevated-label: #d2d2d2;
     --elevated-label-secondary: #989898;
     --elevated-label-tertiary: #5a5a5a;
     --elevated-label-quaternary: #404040;

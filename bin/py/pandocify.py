@@ -64,7 +64,8 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             f'--output={file_html}',
             f'--lua-filter={get_lua_filter()}',
             f'--include-in-header={get_meta_html()}',
-            f'--metadata=pagetitle:{note_title}'
+            f'--metadata=pagetitle:{note_title}',
+            '--metadata=lang:en-GB'
         ])
 
     # if the index.md was generated in the temp folder, pandocify it
@@ -86,7 +87,8 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             f'--output={output_file}',
             f'--lua-filter={get_lua_filter()}',
             f'--include-in-header={get_meta_html()}',
-            f'--metadata=pagetitle:{index_title}'
+            f'--metadata=pagetitle:{index_title}',
+            '--metadata=lang:en-GB'
         ])
 
 
