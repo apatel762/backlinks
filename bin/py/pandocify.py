@@ -56,16 +56,10 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
         util.do_run(cmd=[
             'pandoc',
             file_full_path, file_backlinks,
-            '--from=markdown',
-            '--to=html5',
-            '--no-highlight',
-            f'--css={util.path("css", "main.css")}',
+            f'--defaults=pandoc.yaml',
             f'--id-prefix={util.to_footnote_id(file)}',
             f'--output={file_html}',
-            f'--lua-filter={get_lua_filter()}',
-            f'--include-in-header={get_meta_html()}',
-            f'--metadata=pagetitle:{note_title}',
-            '--metadata=lang:en-GB'
+            f'--metadata=pagetitle:{note_title}'
         ])
 
     # if the index.md was generated in the temp folder, pandocify it
@@ -79,16 +73,10 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
         util.do_run(cmd=[
             'pandoc',
             generated_index_file,
-            '--from=markdown',
-            '--to=html5',
-            '--no-highlight',
-            f'--css={util.path("css", "main.css")}',
+            f'--defaults=pandoc.yaml',
             f'--id-prefix={util.to_footnote_id(index_file_name)}',
             f'--output={output_file}',
-            f'--lua-filter={get_lua_filter()}',
-            f'--include-in-header={get_meta_html()}',
             f'--metadata=pagetitle:{index_title}',
-            '--metadata=lang:en-GB'
         ])
 
 

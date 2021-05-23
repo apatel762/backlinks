@@ -1,0 +1,33 @@
+# This file contains all of the default option settings so that we
+# don't have to specify them over and over again.
+#
+# See https://pandoc.org/MANUAL.html#default-files
+
+from: markdown+emoji
+to: html5
+
+metadata:
+  # the name of the person who authored all of the notes that are
+  # being turned into a static site
+  author: Arjun Patel
+
+  # the language of all of the files (for accessibility, so that
+  # screen readers can understand the generated website)
+  lang: en-GB
+
+# no syntax highlighting as it messes with the custom CSS
+highlight-style: null
+
+# after generating the website, all of the CSS will be in a folder
+# called 'css/', so write that (instead of 'bin/css/')
+css:
+  - css/main.css
+
+filters:
+  # this filter transforms links that end in '.md' to make them have
+  # a '.html' extension instead, so they connect to each other
+  - bin/links_to_html.lua
+
+# metadata that you want to define manually
+include-in-header:
+  - bin/meta/meta.html
