@@ -76,7 +76,7 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
             f'--defaults=pandoc.yaml',
             f'--id-prefix={util.to_footnote_id(index_file_name)}',
             f'--output={output_file}',
-            f'--metadata=pagetitle:{index_title}',
+            f'--metadata=pagetitle:{index_title}'
         ])
 
 
