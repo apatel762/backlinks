@@ -4,6 +4,8 @@ A static site generator for markdown notes that also generates backlinks between
 
 ![Peek 2021-01-30 09-01](https://user-images.githubusercontent.com/8490222/106352472-55191880-62db-11eb-9213-1ff2ad1c3326.gif)
 
+**Requires `pandoc` 2.8+**
+
 ## Context
 
 I wanted a way of managing backlinks in my markdown notes when I converted them to HTML. I came across someone who wanted to do the exact same thing so I thought I'd take their code as a starting point and re-write it so that it works the way I want.
