@@ -2,8 +2,6 @@
 
 A static site generator for markdown notes that also generates backlinks between files.
 
-![Peek 2021-01-30 09-01](https://user-images.githubusercontent.com/8490222/106352472-55191880-62db-11eb-9213-1ff2ad1c3326.gif)
-
 **Requires `pandoc` 2.8+**
 
 ## Context
