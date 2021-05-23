@@ -28,43 +28,6 @@ def get_meta_html() -> str:
     return path
 
 
-def get_before_body_html() -> str:
-    path: str = util.path('bin', 'meta', 'meta-before-body.html')
-    validate_file_exists(path)
-    return path
-
-
-def get_after_body_html() -> str:
-    path: str = util.path('bin', 'meta', 'meta-after-body.html')
-    validate_file_exists(path)
-    return path
-
-
-def get_note_summary(note_path: str, length: int = 300) -> str:
-    output = util.do_run(cmd=[
-        'pandoc',
-        note_path,
-        '--from=markdown',
-        '--to=plain'
-    ])
-
-    # we want to strip the title from the returned text
-    # the text will always have two '\n' chars at the front, so beg=4
-    # then add 6 to the resulting index (to skip the next three '\n' chars)
-    # to get the index of where the text actually starts.
-    text_start_index = output.stdout.find('\n', 4) + len('\n' * 3)
-    text_without_title = output.stdout[text_start_index::]
-    first_n_chars = text_without_title[:length]
-
-    summary: str
-    if first_n_chars.endswith('\\'):
-        summary = first_n_chars[:length - 1]
-    else:
-        summary = first_n_chars
-
-    return summary + '...'
-
-
 def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
     logger: Logger = util.get_logger(logger_name='pandocify')
 
@@ -93,16 +56,10 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
         util.do_run(cmd=[
             'pandoc',
             file_full_path, file_backlinks,
-            '--from=markdown',
-            '--to=html5',
-            '--no-highlight',
+            f'--defaults=pandoc.yaml',
             f'--id-prefix={util.to_footnote_id(file)}',
             f'--output={file_html}',
-            f'--lua-filter={get_lua_filter()}',
-            f'--include-in-header={get_meta_html()}',
-            f'--metadata=pagetitle:{note_title}',
-            f'--include-before-body={get_before_body_html()}',
-            f'--include-after-body={get_after_body_html()}'
+            f'--metadata=pagetitle:{note_title}'
         ])
 
     # if the index.md was generated in the temp folder, pandocify it
@@ -116,26 +73,14 @@ def main(notes_folder: str, temp_folder: str, html_folder: str) -> None:
         util.do_run(cmd=[
             'pandoc',
             generated_index_file,
-            '--from=markdown',
-            '--to=html5',
-            '--no-highlight',
+            f'--defaults=pandoc.yaml',
             f'--id-prefix={util.to_footnote_id(index_file_name)}',
             f'--output={output_file}',
-            f'--lua-filter={get_lua_filter()}',
-            f'--include-in-header={get_meta_html()}',
-            f'--metadata=pagetitle:{index_title}',
-            f'--include-before-body={get_before_body_html()}',
-            f'--include-after-body={get_after_body_html()}'
+            f'--metadata=pagetitle:{index_title}'
         ])
 
 
 if __name__ == '__main__':
-    """
-    arg parse:
-      path to markdown notes
-      relative path to folder where backlinks files will go
-      relative path to folder where HTML files will go
-    """
     parser = argparse.ArgumentParser(description='Convert markdown notes to HTML')
     parser.add_argument(
         '-n', '--notes',
