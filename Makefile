@@ -50,9 +50,11 @@ pandoc-conversion:
 		--html "$(HTML_FOLDER)"
 
 copy-css-and-js:
+	@mkdir -p bin/css
 	@mkdir -p "$(HTML_FOLDER)/css"
 	@rsync -avzh --ignore-missing-args bin/css/*.css "$(HTML_FOLDER)/css"
 	@rsync -avzh --ignore-missing-args bin/css/*.woff2 "$(HTML_FOLDER)/css"
+	@mkdir -p bin/js
 	@mkdir -p "$(HTML_FOLDER)/js"
 	@rsync -avzh --ignore-missing-args bin/js/*.js "$(HTML_FOLDER)/js"
 	@rsync -avzh --ignore-missing-args bin/js/index.json "$(HTML_FOLDER)/js"
