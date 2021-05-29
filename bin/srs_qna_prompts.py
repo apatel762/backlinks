@@ -33,12 +33,12 @@ def reformat_spaced_repetition_text(key, value, format, meta):
         # the list containing the inlines that make up the answer
         if inline['t'] == 'SoftBreak':
           started_parsing_answer = True
-        
+
         if started_parsing_answer:
           para_answer.append(inline)
         else:
           para_question.append(inline)
-        
+
       # see constructor doc: https://github.com/jgm/pandocfilters/blob/master/pandocfilters.py
       return [
         Div(
