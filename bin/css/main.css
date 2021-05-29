@@ -146,17 +146,31 @@ a {
   text-decoration: underline;
 }
 
+/*
+  SRS PROMPTS
+  Questions and answers should be indented and close to each other.
+*/
+div.question {
+  margin-bottom: 0.25em;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+div.answer {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
 /* EXTERNAL URLS */
 a[href*='//'] {
   color: var(--teal);
   text-decoration: none;
 }
 
-a[href*='//']:before {
+a[href*='//']::before {
   content: "{";
 }
 
-a[href*='//']:after {
+a[href*='//']::after {
   content: "}";
 }
 

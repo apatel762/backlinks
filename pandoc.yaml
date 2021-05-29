@@ -23,6 +23,10 @@ highlight-style: null
 css:
   - css/main.css
 
+# doco for writing filters
+#   https://pandoc.org/lua-filters.html#module-pandoc
+#   https://pandoc.org/filters.html#but-i-dont-want-to-learn-haskell
+#   https://github.com/jgm/pandocfilters/blob/master/pandocfilters.py
 filters:
   - bin/links_to_html.py
   - bin/srs_qna_prompts.py
