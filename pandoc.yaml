@@ -24,9 +24,8 @@ css:
   - css/main.css
 
 filters:
-  # this filter transforms links that end in '.md' to make them have
-  # a '.html' extension instead, so they connect to each other
-  - bin/links_to_html.lua
+  - bin/links_to_html.py
+  - bin/srs_qna_prompts.py
 
 # metadata that you want to define manually
 include-in-header:
