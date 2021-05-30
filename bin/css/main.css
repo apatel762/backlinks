@@ -29,7 +29,7 @@
   :root {
     --base-bg: #151515;
     --base-label: #d2d2d2;
-    --base-label-secondary: #8d8d8d;
+    --base-label-secondary: #a1a1a1;
     --base-label-tertiary: #474747;
     --base-label-quaternary: #2a2a2a;
 
@@ -154,10 +154,12 @@ div.question {
   margin-bottom: 0.25em;
   margin-left: 1em;
   margin-right: 1em;
+  color: var(--base-label-secondary);
 }
 div.answer {
   margin-left: 1em;
   margin-right: 1em;
+  color: var(--base-label-secondary);
 }
 
 /* EXTERNAL URLS */
