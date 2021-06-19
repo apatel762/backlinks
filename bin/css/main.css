@@ -322,6 +322,6 @@ section.footnotes hr {
 .full-bleed {
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  height: 80vw;
+  height: 65vw;
 }
 /* END make iframe containers nice and big */
