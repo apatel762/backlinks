@@ -317,3 +317,11 @@ section.footnotes hr {
   height: 2px;
 }
 /* END special styling for backlinks and footnotes text */
+
+/* BEGIN make iframe containers nice and big */
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  height: 80vw;
+}
+/* END make iframe containers nice and big */

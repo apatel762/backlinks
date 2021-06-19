@@ -58,6 +58,7 @@ copy-css-and-js:
 	@mkdir -p "$(HTML_FOLDER)/js"
 	@rsync -avzh --ignore-missing-args bin/js/*.js "$(HTML_FOLDER)/js"
 	@rsync -avzh --ignore-missing-args bin/js/index.json "$(HTML_FOLDER)/js"
+	@rsync -avzh --ignore-missing-args "$(MARKDOWN_FILES_LOCATION)/html" "$(HTML_FOLDER)"
 
 server:
 	python3 -m http.server --directory "$(HTML_FOLDER)"
