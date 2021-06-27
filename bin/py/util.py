@@ -39,6 +39,19 @@ def note_title(file_path: str) -> str:
         .replace('\n', '')
 
 
+def extract_todos(file_path: str) -> List[str]:
+    tmp = []
+    with open(file_path, 'r') as f:
+        for line in f.readlines():
+            if '::TODO' in line:
+                line_clean = \
+                    line.lstrip('- ')\
+                        .replace('::', '')\
+                        .replace('TODO', '')
+                tmp.append(line_clean)
+    return tmp
+
+
 def change_file_extension(file_path: str, new_ext: str) -> str:
     fp: pathlib.Path = pathlib.Path(file_path)
     fp: pathlib.Path = fp.with_suffix('')
